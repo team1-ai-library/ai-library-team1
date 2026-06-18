@@ -1,7 +1,6 @@
 package com.nhnacademy.ailibraryteam1.book.service.impl;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
-import com.nhnacademy.ailibraryteam1.book.repository.BookQueryRepository;
 import com.nhnacademy.ailibraryteam1.book.repository.BookRepository;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
@@ -18,7 +17,7 @@ import java.util.Objects;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final BookQueryRepository bookQueryRepository;
+    private final BookRepository bookRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -31,6 +30,6 @@ public class BookServiceImpl implements BookService {
             throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
         }
 
-        return bookQueryRepository.searchByKeyword(isbn, keyword, pageable);
+        return this.bookRepository.searchByKeyword(isbn, keyword, pageable);
     }
 }

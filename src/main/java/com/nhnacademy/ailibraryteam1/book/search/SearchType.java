@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.entity;
+package com.nhnacademy.ailibraryteam1.book.search;
 
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;

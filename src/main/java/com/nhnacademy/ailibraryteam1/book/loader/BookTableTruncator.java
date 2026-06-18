@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.init;
+package com.nhnacademy.ailibraryteam1.book.loader;
 
 import com.nhnacademy.ailibraryteam1.book.repository.BookRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,9 @@
-package com.nhnacademy.ailibraryteam1.book.repository;
+package com.nhnacademy.ailibraryteam1.book.repository.impl;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
-import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
-import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
+import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -20,9 +19,11 @@ import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
-public class BookQueryRepository {
+public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
+
     private final JPAQueryFactory queryFactory;
 
+    @Override
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
         QBook book = QBook.book;
 

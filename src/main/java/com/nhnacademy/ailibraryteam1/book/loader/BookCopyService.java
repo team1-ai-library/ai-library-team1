@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.init;
+package com.nhnacademy.ailibraryteam1.book.loader;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
