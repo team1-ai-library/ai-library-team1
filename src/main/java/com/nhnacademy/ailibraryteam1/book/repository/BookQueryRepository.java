@@ -1,8 +1,8 @@
 package com.nhnacademy.ailibraryteam1.book.repository;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
+import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
