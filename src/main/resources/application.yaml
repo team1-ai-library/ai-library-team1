@@ -1,3 +1,38 @@
 spring:
   application:
     name: ai-library-team1
+
+  datasource:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://10.116.64.13:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 내부망(랜선)
+    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 외부망
+    username: team1
+    password: ${POSTGRESQL_PW} # 환경변수 사용 (.env 에서 관리)
+    dbcp2:
+      initial-size: 5
+      max-total: 5
+      max-idle: 5
+      min-idle: 5
+      test-on-borrow: true
+      validation-query: SELECT 1
+      pool-prepared-statements: true
+      max-open-prepared-statements: 100
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 3000
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+init:
+  book-file: data/BOOK_DB_202112_filled.csv
+  enable: false
+  batch-size: 3000
