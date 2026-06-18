@@ -19,7 +19,7 @@ public class BookSearchController {
     public ResponseEntity<Page<BookSearchResponse>> search(
             @RequestParam(required = false) String isbn,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String searchType, // TODO 일단 required = false 걸어두었음.
+            @RequestParam String searchType,
             Pageable pageable
     ) {
         // TODO: searchType으로 분기 (VECTOR, HYBRID, RAG 추가 시)

@@ -37,8 +37,7 @@ public class BookQueryRepository {
         BooleanExpression condition = isbnExists
                 ? book.isbn.eq(isbn)
                 : book.title.containsIgnoreCase(keyword)
-                  .or(book.authorName.containsIgnoreCase(keyword))
-                  .or(book.bookContent.containsIgnoreCase(keyword));
+                  .or(book.authorName.containsIgnoreCase(keyword));
 
         // Projections.constructor 대신 new QBookSearchResponse()
         List<BookSearchResponse> result = queryFactory
