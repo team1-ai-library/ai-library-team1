@@ -1,0 +1,4 @@
+@host=http://localhost:8080
+
+### 키워드 검색 (ISBN X)
+GET {{host}}/?keyword=파이썬&searchType=keyword
