@@ -3,6 +3,8 @@ package com.nhnacademy.ailibraryteam1.book.repository;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
+import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
+import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -27,22 +29,19 @@ public class BookQueryRepository {
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
         boolean keywordExists = (Objects.nonNull(keyword) && !keyword.isBlank());
 
-        // ISBN이 있으면 ISBN만으로 검색, 없으면 제목 또는 저자명에 키워드 포함 검색
-        // ISBN이 있을 때 keyword와 AND로 묶지 않고 ISBN 단독 조건으로 변경
-        // authorName도 OR로 추가
-        BooleanExpression condition;
-        if(isbnExists) {
-            condition = book.isbn.eq(isbn);
-        } else if(keywordExists) {
-            condition = book.title.containsIgnoreCase(keyword)
-                    .or(book.authorName.containsIgnoreCase(keyword));
-        } else {
-            // 둘 다 없으면 전체 조회 (조건 없음)
-            condition = null;
+        if (!isbnExists && !keywordExists) {
+            throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
         }
 
+        // ISBN이 있으면 ISBN만으로 검색, 없으면 제목 또는 저자명에 키워드 포함 검색
+        BooleanExpression condition = isbnExists
+                ? book.isbn.eq(isbn)
+                : book.title.containsIgnoreCase(keyword)
+                  .or(book.authorName.containsIgnoreCase(keyword))
+                  .or(book.bookContent.containsIgnoreCase(keyword));
+
         // Projections.constructor 대신 new QBookSearchResponse()
-        List<BookSearchResponse> result =  queryFactory
+        List<BookSearchResponse> result = queryFactory
                 .select(new QBookSearchResponse(
                         book.id,
                         book.isbn,
