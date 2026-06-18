@@ -27,11 +27,6 @@ public class BookQueryRepository {
         QBook book = QBook.book;
 
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
-        boolean keywordExists = (Objects.nonNull(keyword) && !keyword.isBlank());
-
-        if (!isbnExists && !keywordExists) {
-            throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
-        }
 
         // ISBN이 있으면 ISBN만으로 검색, 없으면 제목 또는 저자명에 키워드 포함 검색
         BooleanExpression condition = isbnExists
