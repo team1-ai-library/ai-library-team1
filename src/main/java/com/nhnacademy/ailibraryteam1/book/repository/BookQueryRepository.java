@@ -14,6 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,15 +24,19 @@ public class BookQueryRepository {
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
         QBook book = QBook.book;
 
-        boolean isbnExists = (isbn != null && !isbn.isBlank());
+        boolean isbnExists = (Objects.isNull(isbn) && !isbn.isBlank());
 
-        // ISBN 여부에 따라 조건 분기
+        // ISBN이 있으면 ISBN만으로 검색, 없으면 제목 또는 저자명에 키워드 포함 검색
+        // ISBN이 있을 때 keyword와 AND로 묶지 않고 ISBN 단독 조건으로 변경
+        // authorName도 OR로 추가
         BooleanExpression condition = (isbnExists)
-                ? book.isbn.eq(isbn).and(book.title.containsIgnoreCase(keyword))
-                : book.title.containsIgnoreCase(keyword);
+                ? book.isbn.eq(isbn)
+                : book.title.containsIgnoreCase(keyword)
+                  .or(book.authorName.containsIgnoreCase(keyword));
 
+        // Projections.constructor 대신 new QBookSearchResponse()
         List<BookSearchResponse> result =  queryFactory
-                .select(Projections.constructor(BookSearchResponse.class,
+                .select(new QBookSearchResponse(
                         book.id,
                         book.isbn,
                         book.title,
