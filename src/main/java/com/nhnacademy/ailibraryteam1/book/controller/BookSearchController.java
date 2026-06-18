@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookSearchController {
     private final BookService bookService;
 
-    @GetMapping("/")
+    @GetMapping("/books/search")
     public ResponseEntity<Page<BookSearchResponse>> search(
             @RequestParam(required = false) String isbn,
-            @RequestParam String keyword,
-            @RequestParam String searchType,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String searchType, // TODO 일단 required = false 걸어두었음.
             Pageable pageable
     ) {
-        // TODO: searchType으로 분기
+        // TODO: searchType으로 분기 (VECTOR, HYBRID, RAG 추가 시)
 
         Page<BookSearchResponse> result = bookService.searchByKeyword(isbn, keyword, pageable);
 
