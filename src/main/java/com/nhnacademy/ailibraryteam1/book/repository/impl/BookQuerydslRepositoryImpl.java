@@ -5,6 +5,7 @@ import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,11 +30,26 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
 
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
 
-        // ISBN이 있으면 ISBN만으로 검색, 없으면 제목 또는 저자명에 키워드 포함 검색
-        BooleanExpression condition = isbnExists
-                ? book.isbn.eq(isbn)
-                : book.title.containsIgnoreCase(keyword)
-                  .or(book.authorName.containsIgnoreCase(keyword));
+        // 키워드 검색 시 '제목, 저자'는 LIKE로
+        // bookContent는 GIN 인덱스 태우는 전문 검색으로
+        BooleanExpression condition;
+        if (isbnExists) {
+            // ISBN이 있으면 ISBN 만으로 검색
+            condition = book.isbn.eq(isbn);
+        } else {
+            // LIKE 검색 (제목 또는 저자명 키워드 포함 검색)
+            BooleanExpression likeCondition = book.title.containsIgnoreCase(keyword)
+                    .or(book.authorName.containsIgnoreCase(keyword));
+
+            // 인덱스 전문 검색 (book_content)
+            BooleanExpression ftsCondition = Expressions.booleanTemplate(
+                    "function('ts_match_korean', {0}, {1}) = true",
+                    book.bookContent,
+                    keyword
+            );
+
+            condition = likeCondition.or(ftsCondition);
+        }
 
         // Projections.constructor 대신 new QBookSearchResponse()
         List<BookSearchResponse> result = queryFactory
