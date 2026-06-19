@@ -17,3 +17,9 @@ GET {{host}}/books/search?keyword=에세이&searchType=keyword&page=1&size=5
 
 ### 저자명으로 검색되는지 확인
 GET {{host}}/books/search?keyword=차도하&searchType=keyword
+
+### book_content GIN 전문 검색 확인 (제목/저자에는 없는 단어)
+GET {{host}}/books/search?keyword=데이터&searchType=keyword
+
+### 제목+저자 LIKE + book_content GIN 동시 동작 확인
+GET {{host}}/books/search?keyword=파이썬&searchType=keyword
