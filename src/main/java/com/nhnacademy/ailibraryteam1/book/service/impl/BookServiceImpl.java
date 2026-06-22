@@ -1,6 +1,7 @@
 package com.nhnacademy.ailibraryteam1.book.service.impl;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
+import com.nhnacademy.ailibraryteam1.book.entity.Book;
 import com.nhnacademy.ailibraryteam1.book.repository.BookRepository;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
@@ -31,5 +32,11 @@ public class BookServiceImpl implements BookService {
         }
 
         return this.bookRepository.searchByKeyword(isbn, keyword, pageable);
+    }
+
+    @Override
+    public Book getBook(long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOOK_NOT_FOUND, "존재하지 않는 도서: " + id));
     }
 }

@@ -23,3 +23,12 @@ GET {{host}}/books/search?keyword=데이터&searchType=keyword
 
 ### 제목+저자 LIKE + book_content GIN 동시 동작 확인
 GET {{host}}/books/search?keyword=파이썬&searchType=keyword
+
+### 리뷰 등록
+POST {{host}}/books/6840342001/reviews
+Content-Type: application/json
+
+{
+  "rating": 3,
+  "content": "테스트 리뷰 3"
+}
