@@ -36,7 +36,7 @@ public class PostgreSQLFunctionContributor implements FunctionContributor {
         functionContributions.getFunctionRegistry()
                 .registerPattern(
                         "vector_cosine_similarity", // Java/JPQL에서 부를 이름
-                        "(1.0 - (embedding <=> cast(?1 as vector)))", // DB에 날아갈 SQL
+                        "(1.0 - (?1 <=> cast(?2 as vector)))", // ?1: embedding 컬럼, ?2: 쿼리 벡터
                         functionContributions.getTypeConfiguration()
                                 .getBasicTypeRegistry()
                                 .resolve(StandardBasicTypes.DOUBLE) // 이 함수의 반환 타입: double

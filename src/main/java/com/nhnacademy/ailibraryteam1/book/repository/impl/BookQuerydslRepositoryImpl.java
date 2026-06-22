@@ -3,9 +3,12 @@ package com.nhnacademy.ailibraryteam1.book.repository.impl;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
+import com.nhnacademy.ailibraryteam1.book.entity.QBookEmbedding;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
+import com.pgvector.PGvector;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,6 +27,7 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    // 키워드 검색
     @Override
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
         QBook book = QBook.book;
@@ -63,7 +67,8 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
                         book.price,
                         book.editionPublishDate,
                         book.bookContent,
-                        book.imageUrl))
+                        book.imageUrl,
+                        Expressions.nullExpression(Double.class))) // 널 그대로 넣으면 QueryDSL이 타입 추론 못 해서 문제 생길 수 있으므로 Double 타입 명시
                 .from(book)
                 .where(condition)
                 .offset(pageable.getOffset())
@@ -74,6 +79,50 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
         JPAQuery<Long> countQuery = queryFactory.select(Wildcard.count)
                 .from(book)
                 .where(condition);
+
+        return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
+    }
+
+    // 벡터 검색
+    @Override
+    public Page<BookSearchResponse> searchByVector(float[] queryVector, Pageable pageable) {
+
+        QBook book = QBook.book;
+        QBookEmbedding bookEmbedding = QBookEmbedding.bookEmbedding;
+
+        // float[] -> "[0.1, 0.2, ...]" 형태 문자열로 변환
+        String vectorString = new PGvector(queryVector).toString();
+
+        NumberTemplate<Double> similarity = Expressions.numberTemplate(
+                Double.class,
+                "function('vector_cosine_similarity', {0}, {1})",
+                bookEmbedding.embedding,
+                vectorString
+        );
+
+        List<BookSearchResponse> result = queryFactory
+                .select(new QBookSearchResponse(
+                        book.id,
+                        book.isbn,
+                        book.title,
+                        book.volumeTitle,
+                        book.authorName,
+                        book.publisherName,
+                        book.price,
+                        book.editionPublishDate,
+                        book.bookContent,
+                        book.imageUrl,
+                        similarity))
+                .from(book)
+                .join(bookEmbedding).on(book.id.eq(bookEmbedding.bookId))
+                .orderBy(similarity.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(Wildcard.count)
+                .from(book)
+                .join(bookEmbedding).on(book.id.eq(bookEmbedding.bookId));
 
         return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
     }
