@@ -1,10 +1,14 @@
 package com.nhnacademy.ailibraryteam1.book.controller;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
+import com.nhnacademy.ailibraryteam1.book.search.SearchType;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
+import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,10 +26,17 @@ public class BookSearchController {
             @RequestParam String searchType,
             Pageable pageable
     ) {
-        // TODO: searchType으로 분기 (VECTOR, HYBRID, RAG 추가 시)
 
-        Page<BookSearchResponse> result = bookService.searchByKeyword(isbn, keyword, pageable);
+        SearchType type = SearchType.from(searchType);
 
-        return ResponseEntity.ok(result);
+        Page<BookSearchResponse> result = switch (type) {
+            case KEYWORD -> this.bookService.searchByKeyword(isbn, keyword, pageable);
+            case VECTOR -> this.bookService.searchByVector(keyword, pageable);
+            default -> throw new BusinessException(ErrorCode.UNSUPPORTED_SEARCH_TYPE);
+        };
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
     }
 }
