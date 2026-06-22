@@ -41,3 +41,12 @@ GET {{host}}/books/search?searchType=vector
 
 ### 벡터 검색 - 페이징 확인
 GET {{host}}/books/search?keyword=인공지능&searchType=vector&page=0&size=5
+
+### 리뷰 등록
+POST {{host}}/books/6840342001/reviews
+Content-Type: application/json
+
+{
+  "rating": 3,
+  "content": "테스트 리뷰 3"
+}
