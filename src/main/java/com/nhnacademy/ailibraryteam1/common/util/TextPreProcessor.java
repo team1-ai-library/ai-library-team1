@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.util;
+package com.nhnacademy.ailibraryteam1.common.util;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.util.StringUtils;
