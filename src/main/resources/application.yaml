@@ -18,6 +18,13 @@ spring:
       validation-query: SELECT 1
       pool-prepared-statements: true
       max-open-prepared-statements: 100
+  
+  ai:
+    openai:
+      base-url: https://emb.java21.net
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        model: bge-m3
 
   jpa:
     properties:
