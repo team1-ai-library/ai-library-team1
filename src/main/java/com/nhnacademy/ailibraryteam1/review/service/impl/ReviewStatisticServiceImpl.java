@@ -37,4 +37,10 @@ public class ReviewStatisticServiceImpl implements ReviewStatisticService {
         return reviewStatisticRepository.findById(bookId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STATISTIC_NOT_FOUND));
     }
+
+    @Override
+    @Transactional
+    public void complete(BookReviewStatistic statistic) {
+        reviewStatisticRepository.save(statistic);
+    }
 }
