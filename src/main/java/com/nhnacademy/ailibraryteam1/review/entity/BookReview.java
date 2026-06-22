@@ -38,11 +38,6 @@ public class BookReview {
         this.createdAt = OffsetDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.createdAt = OffsetDateTime.now();
-    }
-
     public static BookReview create(Book book, String content, int rating) {
         return new BookReview(null, book, content, rating, OffsetDateTime.now());
     }

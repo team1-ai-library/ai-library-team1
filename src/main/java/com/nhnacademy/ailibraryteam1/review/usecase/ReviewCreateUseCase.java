@@ -46,6 +46,9 @@ public class ReviewCreateUseCase {
         // 통계 데이터 갱신
         statistic.addReview(savedReview);
 
+        // REQUIRES_NEW로 생성된 엔티티 -> 1차 캐시에 존재하지 않을 수 있으므로 명시적 저장
+        reviewStatisticService.complete(statistic);
+
         // 리뷰 생성 이벤트 발행
         eventPublisher.publishEvent(new ReviewCreatedEvent(bookId));
     }
