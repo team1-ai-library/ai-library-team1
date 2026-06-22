@@ -6,6 +6,7 @@ import com.nhnacademy.ailibraryteam1.book.service.BookService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,9 @@ import java.util.Objects;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final EmbeddingModel embeddingModel;
 
+    // 키워드 검색
     @Override
     @Transactional(readOnly = true)
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
@@ -31,5 +34,20 @@ public class BookServiceImpl implements BookService {
         }
 
         return this.bookRepository.searchByKeyword(isbn, keyword, pageable);
+    }
+
+    // 벡터 검색
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BookSearchResponse> searchByVector(String keyword, Pageable pageable) {
+
+        if (Objects.isNull(keyword) || keyword.isBlank()) {
+            throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
+        }
+
+        // 검색어를 벡터로 변환
+        float[] queryVector = this.embeddingModel.embed(keyword);
+
+        return this.bookRepository.searchByVector(queryVector, pageable);
     }
 }

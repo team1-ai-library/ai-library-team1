@@ -30,3 +30,10 @@ spring:
 init:
   book-file: data/BOOK_DB_202112_filled.csv
   enable: false
+
+  ai:
+    openai:
+      base-url: https://emb.java21.net
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        model: bge-m3

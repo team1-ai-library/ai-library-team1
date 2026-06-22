@@ -26,11 +26,11 @@ import java.util.Objects;
 public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final QBook book = QBook.book;
 
     // 키워드 검색
     @Override
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
-        QBook book = QBook.book;
 
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
 
@@ -87,7 +87,6 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
     @Override
     public Page<BookSearchResponse> searchByVector(float[] queryVector, Pageable pageable) {
 
-        QBook book = QBook.book;
         QBookEmbedding bookEmbedding = QBookEmbedding.bookEmbedding;
 
         // float[] -> "[0.1, 0.2, ...]" 형태 문자열로 변환
