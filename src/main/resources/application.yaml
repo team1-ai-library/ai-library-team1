@@ -5,7 +5,8 @@ spring:
   datasource:
     type: org.apache.commons.dbcp2.BasicDataSource
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true
+      #    url: jdbc:postgresql://10.116.64.13:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 내부망(랜선)
+    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 외부망 (와이파이)
     username: team1
     password: ${POSTGRESQL_PW}
     dbcp2:
@@ -37,4 +38,3 @@ spring:
 init:
   book-file: data/BOOK_DB_202112_filled.csv
   enable: false
-

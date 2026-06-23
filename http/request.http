@@ -50,3 +50,6 @@ Content-Type: application/json
   "rating": 5,
   "content": "안녕하세요"
 }
+
+### 하이브리드 검색
+GET {{host}}/books/search?keyword=인공지능&searchType=hybrid&page=0&size=5
