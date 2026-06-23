@@ -37,8 +37,6 @@ spring:
           options:
             maxLength: "512"
             truncation: "true"
-
-  ai:
     google:
       genai:
         api-key: ${GEMINI_API_KEY} # 환경변수 사용 (.env에서 관리)
