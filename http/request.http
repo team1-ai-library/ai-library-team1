@@ -29,6 +29,6 @@ POST {{host}}/books/6840342001/reviews
 Content-Type: application/json
 
 {
-  "rating": 3,
-  "content": "테스트 리뷰 3"
+  "rating": 5,
+  "content": "안녕하세요"
 }
