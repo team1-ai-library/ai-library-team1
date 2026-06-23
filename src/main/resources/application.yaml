@@ -5,10 +5,9 @@ spring:
   datasource:
     type: org.apache.commons.dbcp2.BasicDataSource
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://10.116.64.13:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 내부망(랜선)
-    #    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 외부망
+    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true
     username: team1
-    password: ${POSTGRESQL_PW} # 환경변수 사용 (.env 에서 관리)
+    password: ${POSTGRESQL_PW}
     dbcp2:
       initial-size: 5
       max-total: 5
@@ -20,12 +19,22 @@ spring:
       max-open-prepared-statements: 100
 
   jpa:
-    properties:
-      hibernate:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+
+  ai:
+    openai:
+      base-url: https://emb.java21.net
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: bge-m3
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY} # 환경변수 사용 (.env에서 관리)
 
 init:
   book-file: data/BOOK_DB_202112_filled.csv
   enable: false
+

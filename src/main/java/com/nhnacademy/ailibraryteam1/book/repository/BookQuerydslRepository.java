@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface BookQuerydslRepository {
 
     Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable);
+
+    Page<BookSearchResponse> searchByVector(float[] queryVector, Pageable pageable);
 }

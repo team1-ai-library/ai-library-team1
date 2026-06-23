@@ -15,7 +15,8 @@ public record BookSearchResponse(
         BigDecimal price,
         LocalDate editionPublishDate,
         String bookContent,
-        String imageUrl
+        String imageUrl,
+        Double similarity
 ) {
     // 타입 안정성 위해
     // 빌드 시 QBookSearchResponse 생성됨
@@ -30,7 +31,8 @@ public record BookSearchResponse(
             BigDecimal price,
             LocalDate editionPublishDate,
             String bookContent,
-            String imageUrl
+            String imageUrl,
+            Double similarity
     ) {
         this.id = id;
         this.isbn = isbn;
@@ -42,5 +44,6 @@ public record BookSearchResponse(
         this.editionPublishDate = editionPublishDate;
         this.bookContent = bookContent;
         this.imageUrl = imageUrl;
+        this.similarity = similarity;
     }
 }

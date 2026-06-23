@@ -26,7 +26,7 @@ public class BookInitRunner implements ApplicationRunner {
         /**
          * init.enable 야멜 설정값으로 적재 로직 켤지 끌지
          */
-        if (!this.initProperties.isEnable()) {
+        if (!this.initProperties.enable()) {
             log.info("[BookInitRunner] init.enable=false, CSV 적재를 건너뜁니다");
             return;
         }
@@ -35,7 +35,7 @@ public class BookInitRunner implements ApplicationRunner {
 
         // truncate + 파싱 + copy 모두 포함한 총합 시간
         long start = System.currentTimeMillis();
-        this.bookCopyService.copyFromCsv(this.initProperties.getBookFile());
+        this.bookCopyService.copyFromCsv(this.initProperties.bookFile());
         long end = System.currentTimeMillis();
 
         log.info("[BookInitRunner] TRUNCATE + 파싱 + COPY 총 소요 시간: {} ms", end - start);
