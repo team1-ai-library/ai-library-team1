@@ -8,4 +8,5 @@ public interface ReviewStatisticService {
     BookReviewStatistic register(BookReviewStatistic statistic);
     Optional<BookReviewStatistic> findStatistic(long bookId);
     BookReviewStatistic getStatistic(long bookId);
+    void complete(BookReviewStatistic statistic);
 }
