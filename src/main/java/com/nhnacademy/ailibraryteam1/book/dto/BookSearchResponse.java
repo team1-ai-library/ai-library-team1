@@ -16,7 +16,8 @@ public record BookSearchResponse(
         LocalDate editionPublishDate,
         String bookContent,
         String imageUrl,
-        Double similarity
+        Double similarity, // 벡터 검색 유사도 (0 ~ 1)
+        Double rrfScore // 하이브리드 검색 RRF 점
 ) {
     // 타입 안정성 위해
     // 빌드 시 QBookSearchResponse 생성됨
@@ -32,7 +33,8 @@ public record BookSearchResponse(
             LocalDate editionPublishDate,
             String bookContent,
             String imageUrl,
-            Double similarity
+            Double similarity,
+            Double rrfScore
     ) {
         this.id = id;
         this.isbn = isbn;
@@ -45,5 +47,6 @@ public record BookSearchResponse(
         this.bookContent = bookContent;
         this.imageUrl = imageUrl;
         this.similarity = similarity;
+        this.rrfScore = rrfScore;
     }
 }

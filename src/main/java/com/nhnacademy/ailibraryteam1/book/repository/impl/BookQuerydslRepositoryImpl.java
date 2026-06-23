@@ -68,6 +68,7 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
                         book.editionPublishDate,
                         book.bookContent,
                         book.imageUrl,
+                        Expressions.nullExpression(Double.class),
                         Expressions.nullExpression(Double.class))) // 널 그대로 넣으면 QueryDSL이 타입 추론 못 해서 문제 생길 수 있으므로 Double 타입 명시
                 .from(book)
                 .where(condition)
@@ -111,7 +112,8 @@ public class BookQuerydslRepositoryImpl implements BookQuerydslRepository {
                         book.editionPublishDate,
                         book.bookContent,
                         book.imageUrl,
-                        similarity))
+                        similarity,
+                        Expressions.nullExpression(Double.class)))
                 .from(book)
                 .join(bookEmbedding).on(book.id.eq(bookEmbedding.bookId))
                 .orderBy(similarity.desc())

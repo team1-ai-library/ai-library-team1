@@ -1,12 +1,29 @@
 package com.nhnacademy.ailibraryteam1.review.service;
 
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
+import com.nhnacademy.ailibraryteam1.review.repository.ReviewRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface ReviewService {
+@Service
+@RequiredArgsConstructor
+public class ReviewService {
+    private final ReviewRepository reviewRepository;
 
-    BookReview register(BookReview review);
-    List<BookReview> getAllBookReviews(long bookId);
-    List<BookReview> getCursorNextReviews(long cursorId);
+    @Transactional
+    public BookReview register(BookReview review) {
+        return reviewRepository.save(review);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookReview> getAllBookReviews(long bookId) {
+        return reviewRepository.findAllByBook_Id(bookId);
+    }
+
+    public List<BookReview> getCursorNextReviews(long cursorId) {
+        return reviewRepository.findAllByIdGreaterThan(cursorId);
+    }
 }

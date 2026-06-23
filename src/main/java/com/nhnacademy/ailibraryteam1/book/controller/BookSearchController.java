@@ -32,6 +32,7 @@ public class BookSearchController {
         Page<BookSearchResponse> result = switch (type) {
             case KEYWORD -> this.bookService.searchByKeyword(isbn, keyword, pageable);
             case VECTOR -> this.bookService.searchByVector(keyword, pageable);
+            case HYBRID -> this.bookService.searchByHybrid(keyword, pageable);
             default -> throw new BusinessException(ErrorCode.UNSUPPORTED_SEARCH_TYPE);
         };
 
