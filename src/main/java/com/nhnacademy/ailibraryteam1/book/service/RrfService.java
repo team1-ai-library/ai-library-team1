@@ -41,7 +41,8 @@ public class RrfService {
                 bookMap.computeIfPresent(book.id(), (k, existing) -> new BookSearchResponse(
                         existing.id(), existing.isbn(), existing.title(), existing.volumeTitle(),
                         existing.authorName(), existing.publisherName(), existing.price(),
-                        existing.editionPublishDate(), existing.imageUrl(), existing.bookContent(), book.similarity(), null
+                        existing.editionPublishDate(), existing.bookContent(), existing.imageUrl(),
+                        book.similarity(), null
                 ));
             }
         }
@@ -57,8 +58,8 @@ public class RrfService {
                     return new BookSearchResponse(
                             original.id(), original.isbn(), original.title(), original.volumeTitle(),
                             original.authorName(), original.publisherName(), original.price(),
-                            original.editionPublishDate(), original.imageUrl(), original.bookContent(), original.similarity(),
-                            rrfScore
+                            original.editionPublishDate(), original.bookContent(), original.imageUrl(),
+                            original.similarity(), rrfScore
                     );
                 })
                 .toList();

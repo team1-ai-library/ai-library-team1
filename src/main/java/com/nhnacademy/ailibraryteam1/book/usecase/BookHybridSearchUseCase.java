@@ -47,10 +47,10 @@ public class BookHybridSearchUseCase {
                     : List.of();
         }, hybridSearchExecutor);
 
-        // 검색어를 벡터로 변환
-        float[] queryVector = this.embeddingModel.embed(keyword);
-
         CompletableFuture<List<BookSearchResponse>> vectorSearchFuture = CompletableFuture.supplyAsync(() -> {
+            // 검색어를 벡터로 변환
+            float[] queryVector = this.embeddingModel.embed(keyword);
+
             Page<BookSearchResponse> vectorPage = this.bookQuerydslRepository.searchByVector(queryVector, largePage);
 
             return (vectorPage != null && vectorPage.hasContent())
