@@ -1,17 +1,18 @@
 package com.nhnacademy.ailibraryteam1.book.usecase;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
-import com.nhnacademy.ailibraryteam1.book.repository.BookRepository;
-import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.nhnacademy.ailibraryteam1.book.service.RrfService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,13 @@ import java.util.concurrent.Executor;
 @RequiredArgsConstructor
 public class BookHybridSearchUseCase {
 
-    private final BookRepository bookRepository;
-    private final BookService bookService;
+    private final BookQuerydslRepository bookQuerydslRepository;
     private final RrfService rrfService;
     private final Executor hybridSearchExecutor;
+    private final EmbeddingModel embeddingModel;
 
     // 하이브리드 검색
+    @Transactional(readOnly = true)
     public Page<BookSearchResponse> searchByHybrid(String keyword, Pageable pageable) {
 
         if (Objects.isNull(keyword) || keyword.isBlank()) {
@@ -38,15 +40,18 @@ public class BookHybridSearchUseCase {
         Pageable largePage = PageRequest.of(0, 100); // 100개만
 
         CompletableFuture<List<BookSearchResponse>> keywordSearchFuture = CompletableFuture.supplyAsync(() -> {
-            Page<BookSearchResponse> keywordPage = this.bookService.searchByKeyword(null, keyword, largePage);
+            Page<BookSearchResponse> keywordPage = this.bookQuerydslRepository.searchByKeyword(null, keyword, largePage);
 
             return (keywordPage != null && keywordPage.hasContent())
                     ? keywordPage.getContent()
                     : List.of();
         }, hybridSearchExecutor);
 
+        // 검색어를 벡터로 변환
+        float[] queryVector = this.embeddingModel.embed(keyword);
+
         CompletableFuture<List<BookSearchResponse>> vectorSearchFuture = CompletableFuture.supplyAsync(() -> {
-            Page<BookSearchResponse> vectorPage = this.bookService.searchByVector(keyword, largePage);
+            Page<BookSearchResponse> vectorPage = this.bookQuerydslRepository.searchByVector(queryVector, largePage);
 
             return (vectorPage != null && vectorPage.hasContent())
                     ? vectorPage.getContent()
