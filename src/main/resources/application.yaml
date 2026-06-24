@@ -34,6 +34,19 @@ spring:
     google:
       genai:
         api-key: ${GEMINI_API_KEY} # 환경변수 사용 (.env에서 관리)
+        chat:
+          options:
+            model: gemini-2.0-flash
+            temperature: 0.7
+    ollama:
+      base-url: http://ollama.java21.net # 올라마 서버 주소
+      chat:
+        options:
+          model: qwen2.5:latest # 사용할 모델
+          temperature: 0.3 # 응답 일관성
+          max-tokens: 1024
+          top-p: 0.9
+          top-k: 40
 
 init:
   book-file: data/BOOK_DB_202112_filled.csv
