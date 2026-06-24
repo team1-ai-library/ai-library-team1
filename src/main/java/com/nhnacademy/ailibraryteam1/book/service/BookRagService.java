@@ -86,7 +86,7 @@ public class BookRagService {
                     .entity(new ParameterizedTypeReference<>() {
                     });
 
-            log.info("[BookRagService] AI 모델 호출 완료: {}", result);
+            log.info("[BookRagService] AI 모델 호출 완료: \n{}", result);
 
             // relevance 내림차순 정렬
             return Objects.nonNull(result)
