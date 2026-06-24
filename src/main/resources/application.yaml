@@ -51,3 +51,9 @@ spring:
 init:
   book-file: data/BOOK_DB_202112_filled.csv
   enable: false
+
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    enabled: true
+    username: ai_library_bot
