@@ -2,7 +2,9 @@ package com.nhnacademy.ailibraryteam1.book.controller;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.search.SearchType;
-import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.book.usecase.BookHybridSearchUseCase;
+import com.nhnacademy.ailibraryteam1.book.usecase.BookKeywordSearchUseCase;
+import com.nhnacademy.ailibraryteam1.book.usecase.BookVectorSearchUseCase;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class BookSearchController {
-    private final BookService bookService;
+    private final BookKeywordSearchUseCase bookKeywordSearchUseCase;
+    private final BookVectorSearchUseCase bookVectorSearchUseCase;
+    private final BookHybridSearchUseCase bookHybridSearchUseCase;
 
     @GetMapping("/books/search")
     public ResponseEntity<Page<BookSearchResponse>> search(
@@ -30,8 +34,9 @@ public class BookSearchController {
         SearchType type = SearchType.from(searchType);
 
         Page<BookSearchResponse> result = switch (type) {
-            case KEYWORD -> this.bookService.searchByKeyword(isbn, keyword, pageable);
-            case VECTOR -> this.bookService.searchByVector(keyword, pageable);
+            case KEYWORD -> this.bookKeywordSearchUseCase.searchByKeyword(isbn, keyword, pageable);
+            case VECTOR -> this.bookVectorSearchUseCase.searchByVector(keyword, pageable);
+            case HYBRID -> this.bookHybridSearchUseCase.searchByHybrid(keyword, pageable);
             default -> throw new BusinessException(ErrorCode.UNSUPPORTED_SEARCH_TYPE);
         };
 

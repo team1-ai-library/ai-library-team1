@@ -1,14 +1,51 @@
 package com.nhnacademy.ailibraryteam1.review.service;
 
+import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
+import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewAiSummary;
+import com.nhnacademy.ailibraryteam1.review.repository.ReviewAiSummaryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-public interface ReviewAiSummaryService {
-    BookReviewAiSummary register(BookReviewAiSummary summary);
-    Optional<BookReviewAiSummary> findSummary(long bookId);
-    BookReviewAiSummary getSummary(long bookId);
-    BookReviewAiSummary startGenerating(BookReviewAiSummary summary);
-    void cancelGenerating(BookReviewAiSummary summary);
-    void complete(BookReviewAiSummary summary);
+@Service
+@RequiredArgsConstructor
+public class ReviewAiSummaryService {
+    private final ReviewAiSummaryRepository reviewAiSummaryRepository;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public BookReviewAiSummary register(BookReviewAiSummary summary) {
+        return reviewAiSummaryRepository.save(summary);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<BookReviewAiSummary> findSummary(long bookId) {
+        return reviewAiSummaryRepository.findById(bookId);
+    }
+
+    @Transactional(readOnly = true)
+    public BookReviewAiSummary getSummary(long bookId) {
+        return reviewAiSummaryRepository.findById(bookId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SUMMARY_NOT_FOUND));
+    }
+
+    @Transactional
+    public BookReviewAiSummary startGenerating(BookReviewAiSummary summary) {
+        summary.startGenerating();
+        return reviewAiSummaryRepository.save(summary);
+    }
+
+    @Transactional
+    public void cancelGenerating(BookReviewAiSummary summary) {
+        summary.stopGenerating();
+        reviewAiSummaryRepository.save(summary);
+    }
+
+    @Transactional
+    public void complete(BookReviewAiSummary summary) {
+        reviewAiSummaryRepository.save(summary);
+    }
 }

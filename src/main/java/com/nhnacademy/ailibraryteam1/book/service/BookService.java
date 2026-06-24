@@ -1,14 +1,20 @@
 package com.nhnacademy.ailibraryteam1.book.service;
 
-import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.Book;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.nhnacademy.ailibraryteam1.book.repository.BookRepository;
+import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
+import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface BookService {
+@Service
+@RequiredArgsConstructor
+public class BookService {
 
-    Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable);
-    Book getBook(long id);
+    private final BookRepository bookRepository;
 
-    Page<BookSearchResponse> searchByVector(String keyword, Pageable pageable);
+    public Book getBook(long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOOK_NOT_FOUND, "존재하지 않는 도서: " + id));
+    }
 }
