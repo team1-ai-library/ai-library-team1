@@ -7,7 +7,6 @@ import com.nhnacademy.ailibraryteam1.feedback.service.FeedbackService;
 import com.nhnacademy.ailibraryteam1.feedback.service.QueryCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
 @RequiredArgsConstructor
@@ -15,9 +14,7 @@ public class CallbackUpdateUseCase {
     private final QueryCacheService queryCacheService;
     private final FeedbackService feedbackService;
 
-    public CallbackResult handleCallback(Update update) {
-        TelegramCallbackInfo info = TelegramCallbackInfo.from(update);
-
+    public CallbackResult handleCallback(TelegramCallbackInfo info) {
         String query = queryCacheService.getRecentQuery(info.chatId());
 
         if (feedbackService.hasExistingFeedback(info.chatId(), info.bookId(), query)) {
