@@ -42,7 +42,7 @@ public class RrfService {
                         existing.id(), existing.isbn(), existing.title(), existing.volumeTitle(),
                         existing.authorName(), existing.publisherName(), existing.price(),
                         existing.editionPublishDate(), existing.bookContent(), existing.imageUrl(),
-                        book.similarity(), null
+                        book.similarity(), null, existing.averageRating(), existing.reviewCount(), existing.reviewSummary()
                 ));
             }
         }
@@ -59,7 +59,7 @@ public class RrfService {
                             original.id(), original.isbn(), original.title(), original.volumeTitle(),
                             original.authorName(), original.publisherName(), original.price(),
                             original.editionPublishDate(), original.bookContent(), original.imageUrl(),
-                            original.similarity(), rrfScore
+                            original.similarity(), rrfScore, original.averageRating(), original.reviewCount(), original.reviewSummary()
                     );
                 })
                 .toList();

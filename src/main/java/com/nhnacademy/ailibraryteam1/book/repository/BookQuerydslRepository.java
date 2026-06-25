@@ -4,6 +4,8 @@ import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.dto.QBookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.QBook;
 import com.nhnacademy.ailibraryteam1.book.entity.QBookEmbedding;
+import com.nhnacademy.ailibraryteam1.review.entity.QBookReviewAiSummary;
+import com.nhnacademy.ailibraryteam1.review.entity.QBookReviewStatistic;
 import com.pgvector.PGvector;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -25,9 +27,12 @@ import java.util.Objects;
 public class BookQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final QBook book = QBook.book;
 
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
+
+        QBook book = QBook.book;
+        QBookReviewStatistic reviewStatistic = QBookReviewStatistic.bookReviewStatistic;
+        QBookReviewAiSummary reviewAiSummary = QBookReviewAiSummary.bookReviewAiSummary;
 
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
 
@@ -65,9 +70,14 @@ public class BookQuerydslRepository {
                         book.editionPublishDate,
                         book.bookContent,
                         book.imageUrl,
+                        Expressions.nullExpression(Double.class), // 널 그대로 넣으면 QueryDSL이 타입 추론 못 해서 문제 생길 수 있으므로 Double 타입 명시
                         Expressions.nullExpression(Double.class),
-                        Expressions.nullExpression(Double.class))) // 널 그대로 넣으면 QueryDSL이 타입 추론 못 해서 문제 생길 수 있으므로 Double 타입 명시
+                        reviewStatistic.averageRating,
+                        reviewStatistic.reviewCount,
+                        reviewAiSummary.reviewSummary))
                 .from(book)
+                .leftJoin(reviewStatistic).on(book.id.eq(reviewStatistic.bookId))
+                .leftJoin(reviewAiSummary).on(book.id.eq(reviewAiSummary.bookId))
                 .where(condition)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -83,7 +93,10 @@ public class BookQuerydslRepository {
 
     public Page<BookSearchResponse> searchByVector(float[] queryVector, Pageable pageable) {
 
+        QBook book = QBook.book;
         QBookEmbedding bookEmbedding = QBookEmbedding.bookEmbedding;
+        QBookReviewStatistic reviewStatistic = QBookReviewStatistic.bookReviewStatistic;
+        QBookReviewAiSummary reviewAiSummary = QBookReviewAiSummary.bookReviewAiSummary;
 
         // float[] -> "[0.1, 0.2, ...]" 형태 문자열로 변환
         String vectorString = new PGvector(queryVector).toString();
@@ -108,9 +121,14 @@ public class BookQuerydslRepository {
                         book.bookContent,
                         book.imageUrl,
                         similarity,
-                        Expressions.nullExpression(Double.class)))
+                        Expressions.nullExpression(Double.class),
+                        reviewStatistic.averageRating,
+                        reviewStatistic.reviewCount,
+                        reviewAiSummary.reviewSummary))
                 .from(book)
                 .join(bookEmbedding).on(book.id.eq(bookEmbedding.bookId))
+                .leftJoin(reviewStatistic).on(book.id.eq(reviewStatistic.bookId))
+                .leftJoin(reviewAiSummary).on(book.id.eq(reviewAiSummary.bookId))
                 .orderBy(similarity.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -91,8 +91,8 @@ public class BookRagService {
             // relevance 내림차순 정렬
             return Objects.nonNull(result)
                     ? result.stream()
-                      .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
-                      .toList()
+                    .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
+                    .toList()
                     : List.of();
         } catch (Exception e) {
             log.error("[BookRagService] AI 모델 호출 실패 - 모델: {}, 질문: {}, 원인: {}",
@@ -112,7 +112,7 @@ public class BookRagService {
             BookSearchResponse book = books.get(i);
 
             sb.append("### 도서 ").append(i + 1).append("\n"); // 도서 번호
-            sb.append("- ID: " ).append(book.id()).append("\n");
+            sb.append("- ID: ").append(book.id()).append("\n");
             sb.append("- 제목: ").append(book.title()).append("\n");
             sb.append("- 저자: ").append(book.authorName()).append("\n");
             sb.append("- 출판사: ").append(book.publisherName()).append("\n");
@@ -132,6 +132,22 @@ public class BookRagService {
             // 유사도 점수
             if (Objects.nonNull(book.similarity())) {
                 sb.append("- 유사도: ").append(book.getSimilarityPercent()).append("\n");
+            }
+
+            // 평점 정보
+            if (Objects.nonNull(book.averageRating()) && Objects.nonNull(book.reviewCount()) && book.reviewCount() > 0) {
+                sb.append("- 평점: ")
+                        .append(String.format("%.1f/5.0 (%d개 리뷰)", book.averageRating(), book.reviewCount()))
+                        .append("\n");
+            }
+
+            // 리뷰 요약
+            if (Objects.nonNull(book.reviewSummary()) && !book.reviewSummary().isBlank()) {
+                String summary = book.reviewSummary().length() > 100
+                        ? book.reviewSummary().substring(0, 100) + "..."
+                        : book.reviewSummary();
+
+                sb.append("- 리뷰 요약: ").append(summary).append("\n");
             }
 
             sb.append("\n");

@@ -18,7 +18,10 @@ public record BookSearchResponse(
         String bookContent,
         String imageUrl,
         Double similarity, // 벡터 검색 유사도 (0 ~ 1)
-        Double rrfScore // 하이브리드 검색 RRF 점
+        Double rrfScore, // 하이브리드 검색 RRF 점
+        BigDecimal averageRating,
+        Long reviewCount,
+        String reviewSummary
 ) {
     // 타입 안정성 위해
     // 빌드 시 QBookSearchResponse 생성됨
@@ -35,7 +38,10 @@ public record BookSearchResponse(
             String bookContent,
             String imageUrl,
             Double similarity,
-            Double rrfScore
+            Double rrfScore,
+            BigDecimal averageRating,
+            Long reviewCount,
+            String reviewSummary
     ) {
         this.id = id;
         this.isbn = isbn;
@@ -49,11 +55,14 @@ public record BookSearchResponse(
         this.imageUrl = imageUrl;
         this.similarity = similarity;
         this.rrfScore = rrfScore;
+        this.averageRating = averageRating;
+        this.reviewCount = reviewCount;
+        this.reviewSummary = reviewSummary;
     }
 
     // 유사도를 퍼센트로 변환
     public String getSimilarityPercent() {
-        if(Objects.isNull(similarity)) {
+        if (Objects.isNull(similarity)) {
             return null;
         }
 
