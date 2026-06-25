@@ -1,5 +1,7 @@
 package com.nhnacademy.ailibraryteam1.feedback.keyboard;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -7,9 +9,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TelegramKeyboardFactory {
-
-    public InlineKeyboardMarkup createdFeedbackKeyboard(long bookId) {
+    public static InlineKeyboardMarkup createdFeedbackKeyboard(long bookId) {
         InlineKeyboardButton goodButton = InlineKeyboardButton.builder()
                 .text("👍 좋았음")
                 .callbackData("fb:" + bookId + ":GOOD")

@@ -56,4 +56,4 @@ telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN}
     enabled: true
-    username: ai_library_bot
+    username: T1AILibBot
