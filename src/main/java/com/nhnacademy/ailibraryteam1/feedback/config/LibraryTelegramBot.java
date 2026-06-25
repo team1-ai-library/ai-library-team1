@@ -15,6 +15,9 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -37,10 +40,13 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
         this.telegramBotProperties = telegramBotProperties;
         this.callbackUpdateUseCase = callbackUpdateUseCase;
         this.telegramBookSearchUseCase = telegramBookSearchUseCase;
+        
+        registerBotCommands();
     }
 
     @Override
     public void onUpdateReceived(Update update) {
+
         if (update.hasCallbackQuery()) {
             TelegramCallbackInfo info = TelegramCallbackInfo.from(update);
 
@@ -48,10 +54,15 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
             return;
         }
 
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            TelegramMessageInfo info = TelegramMessageInfo.from(update);
+        String userInput = update.getMessage().getText().trim();
 
-            handleSearch(info);
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            if (userInput.startsWith("/search ")) {
+                String query = userInput.substring("/search ".length()).trim();
+                TelegramMessageInfo info = TelegramMessageInfo.from(update, query);
+
+                handleSearch(info);
+            }
         }
     }
 
@@ -123,6 +134,19 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
             this.execute(answer);
         } catch (TelegramApiException e) {
             log.warn("텔레그램 에러 응답 전송 실패: {}", e.getMessage());
+        }
+    }
+
+    private void registerBotCommands() {
+        List<BotCommand> commands = List.of(
+                new BotCommand("search", "도서 RAG 추천 검색 (예: /search 자바)")
+        );
+
+        try {
+            this.execute(new SetMyCommands(commands, new BotCommandScopeDefault(), null));
+            log.info("텔레그램 봇 명령어가 성공적으로 등록되었습니다.");
+        } catch (TelegramApiException e) {
+            log.error("봇 명령어 등록 중 예외 발생: {}", e.getMessage(), e);
         }
     }
 }

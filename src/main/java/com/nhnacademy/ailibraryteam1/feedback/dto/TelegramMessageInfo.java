@@ -7,11 +7,10 @@ public record TelegramMessageInfo(
         long messageId,
         String text
 ) {
-    public static TelegramMessageInfo from(Update update) {
+    public static TelegramMessageInfo from(Update update, String query) {
         long chatId = update.getMessage().getChatId();
         long messageId = update.getMessage().getMessageId();
-        String text = update.getMessage().getText();
 
-        return new TelegramMessageInfo(chatId, messageId, text);
+        return new TelegramMessageInfo(chatId, messageId, query);
     }
 }
