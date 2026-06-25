@@ -12,6 +12,8 @@ public enum ErrorCode {
     STATISTIC_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 통계 정보를 찾을 수 없습니다."),
     SUMMARY_NOT_FOUND(HttpStatus.NOT_FOUND, "AI 리뷰 요약을 찾을 수 없습니다."),
     UNSUPPORTED_SEARCH_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 검색 타입입니다."),
+    UNSUPPORTED_MODEL(HttpStatus.BAD_REQUEST, "지원하지 않는 모델 타입입니다."),
+    AI_MODEL_CALL_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "AI 모델 호출에 실패했습니다."), // AI 서버가 일시적으로 응답하지 못 하는 상황이라서 (서버 문제)
     SEARCH_CONDITION_REQUIRED(HttpStatus.BAD_REQUEST, "검색어 또는 ISBN을 입력해주세요."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
 

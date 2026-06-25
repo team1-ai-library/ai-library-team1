@@ -1,8 +1,7 @@
-package com.nhnacademy.ailibraryteam1.book.runner;
+package com.nhnacademy.ailibraryteam1.book.loader;
 
 
 import com.nhnacademy.ailibraryteam1.book.config.InitProperties;
-import com.nhnacademy.ailibraryteam1.book.loader.BookCopyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

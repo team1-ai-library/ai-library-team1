@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public record BookSearchResponse(
         long id,
@@ -48,5 +49,14 @@ public record BookSearchResponse(
         this.imageUrl = imageUrl;
         this.similarity = similarity;
         this.rrfScore = rrfScore;
+    }
+
+    // 유사도를 퍼센트로 변환
+    public String getSimilarityPercent() {
+        if(Objects.isNull(similarity)) {
+            return null;
+        }
+
+        return String.format("%.1f%%", similarity * 100);
     }
 }

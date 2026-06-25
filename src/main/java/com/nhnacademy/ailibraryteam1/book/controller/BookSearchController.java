@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class BookSearchController {
+
     private final BookKeywordSearchUseCase bookKeywordSearchUseCase;
     private final BookVectorSearchUseCase bookVectorSearchUseCase;
     private final BookHybridSearchUseCase bookHybridSearchUseCase;

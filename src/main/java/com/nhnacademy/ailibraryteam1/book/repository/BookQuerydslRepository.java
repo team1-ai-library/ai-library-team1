@@ -23,7 +23,7 @@ import java.util.Objects;
 @Repository
 @RequiredArgsConstructor
 public class BookQuerydslRepository {
-    
+
     private final JPAQueryFactory queryFactory;
     private final QBook book = QBook.book;
 

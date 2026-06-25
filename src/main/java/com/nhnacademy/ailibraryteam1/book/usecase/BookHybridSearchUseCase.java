@@ -5,8 +5,8 @@ import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.nhnacademy.ailibraryteam1.book.service.RrfService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +21,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Component
-@RequiredArgsConstructor
 public class BookHybridSearchUseCase {
 
     private final BookQuerydslRepository bookQuerydslRepository;
     private final RrfService rrfService;
     private final Executor hybridSearchExecutor;
     private final EmbeddingModel embeddingModel;
+
+    public BookHybridSearchUseCase(BookQuerydslRepository bookQuerydslRepository,
+                                   RrfService rrfService,
+                                   Executor hybridSearchExecutor,
+                                   @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel) {
+
+        this.bookQuerydslRepository = bookQuerydslRepository;
+        this.rrfService = rrfService;
+        this.hybridSearchExecutor = hybridSearchExecutor;
+        this.embeddingModel = embeddingModel;
+    }
 
     // 하이브리드 검색
     @Transactional(readOnly = true)

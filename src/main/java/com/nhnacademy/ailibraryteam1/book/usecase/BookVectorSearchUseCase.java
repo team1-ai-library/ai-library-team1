@@ -4,8 +4,8 @@ import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 @Component
-@RequiredArgsConstructor
 public class BookVectorSearchUseCase {
 
     private final BookQuerydslRepository bookQuerydslRepository;
     private final EmbeddingModel embeddingModel;
+
+    public BookVectorSearchUseCase(BookQuerydslRepository bookQuerydslRepository,
+                                   @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel) {
+
+        this.bookQuerydslRepository = bookQuerydslRepository;
+        this.embeddingModel = embeddingModel;
+    }
 
     // 벡터 검색
     @Transactional(readOnly = true)
