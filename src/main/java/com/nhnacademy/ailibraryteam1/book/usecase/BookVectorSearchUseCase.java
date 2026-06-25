@@ -2,18 +2,18 @@ package com.nhnacademy.ailibraryteam1.book.usecase;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
+import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-@Component
+@UseCase
 public class BookVectorSearchUseCase {
 
     private final BookQuerydslRepository bookQuerydslRepository;

@@ -4,17 +4,17 @@ import com.nhnacademy.ailibraryteam1.book.dto.BookAiRecommendationResponse;
 import com.nhnacademy.ailibraryteam1.book.entity.Book;
 import com.nhnacademy.ailibraryteam1.book.service.BookRagService;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramBookSearchResult;
 import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramMessageInfo;
 import com.nhnacademy.ailibraryteam1.feedback.service.QueryCacheService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+@UseCase
 @RequiredArgsConstructor
 public class TelegramBookSearchUseCase {
     private final QueryCacheService queryCacheService;

@@ -1,14 +1,14 @@
 package com.nhnacademy.ailibraryteam1.feedback.usecase;
 
+import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.feedback.dto.CallbackResult;
 import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramCallbackInfo;
 import com.nhnacademy.ailibraryteam1.feedback.entity.Feedback;
 import com.nhnacademy.ailibraryteam1.feedback.service.FeedbackService;
 import com.nhnacademy.ailibraryteam1.feedback.service.QueryCacheService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+@UseCase
 @RequiredArgsConstructor
 public class CallbackUpdateUseCase {
     private final QueryCacheService queryCacheService;

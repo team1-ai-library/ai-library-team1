@@ -2,6 +2,7 @@ package com.nhnacademy.ailibraryteam1.review.usecase;
 
 import com.nhnacademy.ailibraryteam1.book.entity.Book;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.review.dto.ReviewCreateRequest;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewStatistic;
@@ -11,10 +12,9 @@ import com.nhnacademy.ailibraryteam1.review.service.ReviewStatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@UseCase
 @RequiredArgsConstructor
 public class ReviewCreateUseCase {
     private final BookService bookService;

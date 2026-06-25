@@ -2,6 +2,7 @@ package com.nhnacademy.ailibraryteam1.review.usecase;
 
 import com.nhnacademy.ailibraryteam1.book.entity.Book;
 import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewAiSummary;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewAiSummaryService;
@@ -11,12 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
-@Component
+@UseCase
 @RequiredArgsConstructor
 public class ReviewSummarizeUseCase {
     private final BookService bookService;
