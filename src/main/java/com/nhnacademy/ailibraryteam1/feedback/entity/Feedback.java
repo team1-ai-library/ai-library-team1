@@ -43,4 +43,8 @@ public class Feedback {
     public static Feedback create(long chatId, long bookId, String query, FeedbackType type) {
         return new Feedback(null, chatId, bookId, query, type, null);
     }
+
+    public double getFeedbackScore() {
+        return type.getScore();
+    }
 }
