@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: ai-library-team1
@@ -47,6 +50,14 @@ spring:
           max-tokens: 1024
           top-p: 0.9
           top-k: 40
+
+    mcp:
+      client:
+        enabled: true
+        sse:
+          connections:
+            data4library:
+              url: http://localhost:8081/sse
 
 init:
   book-file: data/BOOK_DB_202112_filled.csv
