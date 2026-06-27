@@ -47,7 +47,7 @@ spring:
         options:
           model: qwen2.5:latest # 사용할 모델
           temperature: 0.3 # 응답 일관성
-          max-tokens: 1024
+#          max-tokens: 1024
           top-p: 0.9
           top-k: 40
 

@@ -52,7 +52,7 @@ Content-Type: application/json
 }
 
 ### 하이브리드 검색
-GET {{host}}/books/search?keyword=자바 프로그래밍&searchType=hybrid&page=0&size=5
+GET {{host}}/books/search?keyword=자격증 취득&searchType=hybrid&page=0&size=5
 
 ### RAG (ollama)
 # @no-redirect
