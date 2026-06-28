@@ -58,6 +58,7 @@ spring:
           connections:
             data4library:
               url: http://localhost:8081/sse
+        initialized: false
 
 init:
   book-file: data/BOOK_DB_202112_filled.csv

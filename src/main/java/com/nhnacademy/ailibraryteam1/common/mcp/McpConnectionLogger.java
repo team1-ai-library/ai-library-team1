@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,12 +13,13 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnBean(McpSyncClient.class) // MCP 클라이언트가 없을 때 로거 자체를 안 띄우기 위해
 public class McpConnectionLogger implements ApplicationRunner {
 
     private final List<McpSyncClient> mcpSyncClient;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
 
         this.mcpSyncClient.forEach(client -> {
                 log.info("[McpConnectionLogger] 연결된 서버: {}", client.getServerInfo());
