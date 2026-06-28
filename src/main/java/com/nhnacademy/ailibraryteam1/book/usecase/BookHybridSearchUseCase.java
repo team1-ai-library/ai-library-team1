@@ -47,9 +47,11 @@ public class BookHybridSearchUseCase {
             throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
         }
 
-        Pageable largePage = PageRequest.of(0, 100); // 100개만
+        // 검색은 항상 100개
+        Pageable largePage = PageRequest.of(0, 100);
 
         CompletableFuture<List<BookSearchResponse>> keywordSearchFuture = CompletableFuture.supplyAsync(() -> {
+            // 검색은 largePage로
             Page<BookSearchResponse> keywordPage = this.bookQuerydslRepository.searchByKeyword(null, keyword, largePage);
 
             return (keywordPage != null && keywordPage.hasContent())
@@ -61,6 +63,7 @@ public class BookHybridSearchUseCase {
             // 검색어를 벡터로 변환
             float[] queryVector = this.embeddingModel.embed(keyword);
 
+            // 검색은 largePage로
             Page<BookSearchResponse> vectorPage = this.bookQuerydslRepository.searchByVector(queryVector, largePage);
 
             return (vectorPage != null && vectorPage.hasContent())
@@ -76,6 +79,7 @@ public class BookHybridSearchUseCase {
 
         List<BookSearchResponse> result = resultFuture.join();
 
+        // 반환은 외부에서 파라미터로 주입받은 pageable로 자름
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), result.size());
 

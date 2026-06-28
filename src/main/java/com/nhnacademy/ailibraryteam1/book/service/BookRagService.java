@@ -23,10 +23,10 @@ import java.util.Objects;
 @Slf4j
 public class BookRagService {
 
-    // 만약 100권이 검출된다면 토큰이 고갈될 수 있음
-    // 상위 10권 처럼 관련성 높은 것만 넣어야 함 (토큰도 생각하여)
-    // 컨텍스트로 몇 개를 쓸 지 상수로 빼둠
-    private static final int RAG_CONTEXT_SIZE = 10;
+    // 100개 검색 후 5개만 AI에게
+    private static final int RETRIEVAL_K = 100;
+    private static final int RERANK_K = 5;
+    private static final double RRF_THRESHOLD = 0.02;
 
     private final BookHybridSearchUseCase hybridSearchUseCase;
     private final ChatClient geminiChatClient;
@@ -53,13 +53,10 @@ public class BookRagService {
     public List<BookAiRecommendationResponse> recommendBooks(String question, String model) {
 
         ChatClient chatClient = this.selectClient(model);
-
         log.info("[BookRagService] RAG 추천 시작 - 질문: {}, 모델: {}", question, model);
 
-        log.info("[BookRagService] 질문: {}", question);
-
-        Pageable pageable = PageRequest.of(0, RAG_CONTEXT_SIZE);
-
+        // RETRIEVAL_K개 요청 -> 내부에서 이미 RRF 정렬된 상태로 옴
+        Pageable pageable = PageRequest.of(0, RETRIEVAL_K);
         List<BookSearchResponse> books = hybridSearchUseCase
                 .searchByHybrid(question, pageable)
                 .getContent();
@@ -71,8 +68,18 @@ public class BookRagService {
             return List.of();
         }
 
-        String context = this.buildContext(books);
+        // RRF 임계값 필터링 + 상위 RERANK_K개만
+        List<BookSearchResponse> topKBooks = this.selectTopKBooks(books);
+        log.info("[BookRagService] Top-K 선정 완료 - {}권 -> {}권", books.size(), topKBooks.size());
+
+        if (topKBooks.isEmpty()) {
+            log.warn("[BookRagService] RRF 필터링 후 도서가 없습니다 - 질문: {}", question);
+            return List.of();
+        }
+
+        String context = this.buildContext(topKBooks);
         log.debug("[BookRagService] 컨텍스트 생성 완료 - 길이: {} 자", context.length());
+
 
         log.info("[BookRagService] AI 모델 호출 시작");
         try {
@@ -91,8 +98,8 @@ public class BookRagService {
             // relevance 내림차순 정렬
             return Objects.nonNull(result)
                     ? result.stream()
-                    .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
-                    .toList()
+                      .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
+                      .toList()
                     : List.of();
         } catch (Exception e) {
             log.error("[BookRagService] AI 모델 호출 실패 - 모델: {}, 질문: {}, 원인: {}",
@@ -129,11 +136,6 @@ public class BookRagService {
                 sb.append("- 내용: ").append(content).append("\n");
             }
 
-            // 유사도 점수
-            if (Objects.nonNull(book.similarity())) {
-                sb.append("- 유사도: ").append(book.getSimilarityPercent()).append("\n");
-            }
-
             // 평점 정보
             if (Objects.nonNull(book.averageRating()) && Objects.nonNull(book.reviewCount()) && book.reviewCount() > 0) {
                 sb.append("- 평점: ")
@@ -154,5 +156,15 @@ public class BookRagService {
         }
 
         return sb.toString();
+    }
+
+    private List<BookSearchResponse> selectTopKBooks(List<BookSearchResponse> books) {
+
+        return books.stream()
+                .filter(book -> Objects.nonNull(book.rrfScore()))
+                .filter(book -> book.rrfScore() >= RRF_THRESHOLD)
+                .limit(RERANK_K) // 이미 RRF 정렬된 상태니까 바로 자름
+                .peek(book -> log.debug("[BookRagService] 선정된 도서 - 제목: {}, RRF: {}", book.title(), book.rrfScore()))
+                .toList();
     }
 }
