@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -62,6 +63,7 @@ public class PersonalizationService {
 
         List<Long> likedBookIds = userFeedbacks.stream()
                 .filter(f -> f.getType() == FeedbackType.GOOD)
+                .sorted(Comparator.comparing(Feedback::getCreatedAt).reversed())
                 .map(Feedback::getBookId)
                 .distinct()
                 .limit(MAX_LATEST_FEEDBACK_LIMIT)
@@ -113,8 +115,8 @@ public class PersonalizationService {
 
         for (int i = 0; i < vectorA.length; i++) {
             dotProduct += vectorA[i] * vectorB[i];
-            normA += Math.pow(vectorA[i], 2);
-            normB += Math.pow(vectorB[i], 2);
+            normA += vectorA[i] * vectorA[i];
+            normB += vectorB[i] * vectorB[i];
         }
 
         if (normA == 0.0 || normB == 0.0) {
