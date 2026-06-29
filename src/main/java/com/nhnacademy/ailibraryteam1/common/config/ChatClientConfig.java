@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestClient;
 
 @Configuration
 @RequiredArgsConstructor
@@ -52,15 +55,18 @@ public class ChatClientConfig {
 
     @Bean("reviewSummarizerChatClient")
     public ChatClient reviewSummarizerChatClient() {
+        BufferingClientHttpRequestFactory requestFactory =
+                new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
         OpenAiApi openAiApi = OpenAiApi.builder()
                 .baseUrl(localAiBaseUrl)
                 .apiKey("local")
+                .restClientBuilder(RestClient.builder().requestFactory(requestFactory))
                 .build();
         OpenAiChatModel chatModel = OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
                         .model(localAiModel)
-                        .temperature(0.0)
                         .build())
                 .build();
         return ChatClient.builder(chatModel)
