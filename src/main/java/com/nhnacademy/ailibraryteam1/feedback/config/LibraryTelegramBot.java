@@ -99,6 +99,7 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
                             .caption(caption)
                             .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(book.id()))
                             .build();
+
                     this.execute(sendPhoto);
                 }
             } catch (TelegramApiException e) {
