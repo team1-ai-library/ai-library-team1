@@ -8,6 +8,8 @@ import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import com.nhnacademy.ailibraryteam1.common.util.PromptTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +52,7 @@ public class BookRagService {
         };
     }
 
-    public List<BookAiRecommendationResponse> recommendBooks(String question, String model) {
+    public List<BookAiRecommendationResponse> recommendBooks(String question, String model, String conversationId) {
 
         ChatClient chatClient = this.selectClient(model);
         log.info("[BookRagService] RAG 추천 시작 - 질문: {}, 모델: {}", question, model);
@@ -89,6 +91,9 @@ public class BookRagService {
                             .param("question", question)
                             .param("context", context)
                     )
+                    .advisors(advisorSpec -> advisorSpec.param(
+                            ChatMemory.CONVERSATION_ID, conversationId
+                    ))
                     .call()
                     .entity(new ParameterizedTypeReference<>() {
                     });
