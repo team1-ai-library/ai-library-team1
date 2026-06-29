@@ -6,8 +6,12 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +21,12 @@ public class ChatClientConfig {
 
     private final ToolCallbackProvider mcpTools;
     private final ChatMemory chatMemory;
+
+    @Value("${local-ai.base-url}")
+    private String localAiBaseUrl;
+
+    @Value("${local-ai.model}")
+    private String localAiModel;
 
     @Bean("geminiChatClient")
     public ChatClient geminiChatClient(@Qualifier("googleGenAiChatModel") ChatModel chatModel) {
@@ -37,6 +47,24 @@ public class ChatClientConfig {
                         new SimpleLoggerAdvisor(),
                         MessageChatMemoryAdvisor.builder(chatMemory).build()
                 )
+                .build();
+    }
+
+    @Bean("reviewSummarizerChatClient")
+    public ChatClient reviewSummarizerChatClient() {
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .baseUrl(localAiBaseUrl)
+                .apiKey("local")
+                .build();
+        OpenAiChatModel chatModel = OpenAiChatModel.builder()
+                .openAiApi(openAiApi)
+                .defaultOptions(OpenAiChatOptions.builder()
+                        .model(localAiModel)
+                        .temperature(0.0)
+                        .build())
+                .build();
+        return ChatClient.builder(chatModel)
+                .defaultAdvisors(new SimpleLoggerAdvisor())
                 .build();
     }
 }

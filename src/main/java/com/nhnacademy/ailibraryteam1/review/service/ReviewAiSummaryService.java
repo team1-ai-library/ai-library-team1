@@ -47,5 +47,6 @@ public class ReviewAiSummaryService {
     @Transactional
     public void complete(BookReviewAiSummary summary) {
         reviewAiSummaryRepository.save(summary);
+
     }
 }

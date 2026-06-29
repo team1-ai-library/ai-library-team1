@@ -5,11 +5,13 @@ import com.nhnacademy.ailibraryteam1.book.service.BookService;
 import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewAiSummary;
+import com.nhnacademy.ailibraryteam1.review.event.ReviewEmbeddingEvent;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewAiSummaryService;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewService;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewSummarizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
@@ -23,6 +25,7 @@ public class ReviewSummarizeUseCase {
     private final ReviewService reviewService;
     private final ReviewAiSummaryService reviewAiSummaryService;
     private final ReviewSummarizer reviewSummarizer;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void execute(long bookId) {
         Book book = bookService.getBook(bookId);
@@ -96,6 +99,8 @@ public class ReviewSummarizeUseCase {
             reviewAiSummaryService.complete(summary);
 
             log.info("리뷰 요약이 생성되었습니다.");
+
+            eventPublisher.publishEvent(ReviewEmbeddingEvent.create(book, summary.getReviewSummary()));
         } catch (Exception e) {
             log.info("리뷰 요약 생성 중 예외가 발생했습니다. 리뷰 요약 생성을 취소합니다.", e);
             reviewAiSummaryService.cancelGenerating(summary);
