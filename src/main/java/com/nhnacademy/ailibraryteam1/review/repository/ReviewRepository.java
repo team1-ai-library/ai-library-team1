@@ -8,5 +8,5 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<BookReview, Long> {
     List<BookReview> findAllByBook_Id(Long bookId);
 
-    List<BookReview> findAllByIdGreaterThan(Long cursorId);
+    List<BookReview> findAllByBook_IdAndIdGreaterThan(Long bookId, Long idIsGreaterThan);
 }

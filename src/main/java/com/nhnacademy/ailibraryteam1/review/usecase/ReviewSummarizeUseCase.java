@@ -59,7 +59,7 @@ public class ReviewSummarizeUseCase {
             // 이미 존재하는 리뷰가 있다면
             if (summary.getLastReviewId() != null) {
                 // 최신 리뷰 조회
-                reviews = reviewService.getCursorNextReviews(summary.getLastReviewId());
+                reviews = reviewService.getCursorNextReviews(bookId, summary.getLastReviewId());
 
                 // 리뷰가 충분하지 않다면 취소
                 if (reviews.isEmpty() || reviews.size() < 5) {
