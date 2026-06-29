@@ -13,20 +13,5 @@ public class ChatMemoryConfig {
         return MessageWindowChatMemory.builder()
                 .maxMessages(10)
                 .build();
-
-        // Telegram
-        // String conversationId = "telegram-" + chatId;
-
-        // Web
-        // String conversationId = "web-" + sessionId;
-        /*
-        String response = chatClient.prompt()
-                .user(userMessage)
-                .advisors(a -> a.param(
-                    MessageChatMemoryAdvisor.CONVERSATION_ID_KEY, conversationId
-                ))
-                .call()
-                .content();
-         */
     }
 }
