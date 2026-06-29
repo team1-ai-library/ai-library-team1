@@ -80,8 +80,9 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
                 작가: %s
                 출판사: %s
                 연관도: %d%%
+                선호도: %s
                 이유: %s
-                """, book.title(), book.authorName(), book.publisherName(), book.relevance(), book.reason());
+                """, book.title(), book.authorName(), book.publisherName(), book.relevance(), book.getPreferencePercent(), book.reason());
 
             try {
                 if (book.imageUrl() == null || book.imageUrl().isBlank()) {
