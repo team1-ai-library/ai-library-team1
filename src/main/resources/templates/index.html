@@ -76,12 +76,13 @@
         <div class="chat-hint">예: "광주에서 토비의 스프링 빌릴 수 있어?" / "이번 주 급상승 도서 알려줘"</div>
         <div class="chat-input-row">
             <input type="text" id="chat-input" placeholder="질문을 입력하세요">
-            <button id="chat-send">
+            <button id="chat-send" onclick="doChat()">
                 <i class="ti ti-send" aria-hidden="true"></i>
             </button>
         </div>
     </div>
 </div>
+
 
 <script th:src="@{/js/app.js}"></script>
 </body>

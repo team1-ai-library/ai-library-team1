@@ -220,6 +220,35 @@ header span {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.book-card:hover {
+    border-color: #b4b2a9;
+}
+
+.book-cover {
+    width: 60px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 0.5px solid #e0ddd6;
+    flex-shrink: 0;
+}
+
+.book-cover-empty {
+    width: 60px;
+    height: 84px;
+    background: #f5f4f0;
+    border-radius: 6px;
+    border: 0.5px solid #e0ddd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b4b2a9;
+    font-size: 20px;
+    flex-shrink: 0;
 }
 
 .book-rank {
@@ -314,9 +343,7 @@ header span {
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 .error-msg {
@@ -479,19 +506,59 @@ header span {
     animation: bounce 1.2s ease-in-out infinite;
 }
 
-.typing span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing span:nth-child(3) {
-    animation-delay: 0.4s;
-}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes bounce {
-    0%, 60%, 100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-6px);
-    }
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
 }
+
+/* ── Pagination ── */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.page-btn {
+    height: 32px;
+    min-width: 32px;
+    padding: 0 8px;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 6px;
+    background: #fff;
+    color: #5f5e5a;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.page-btn:hover:not(:disabled):not(.active) {
+    border-color: #b4b2a9;
+    color: #1a1a18;
+}
+
+.page-btn.active {
+    background: #1a1a18;
+    border-color: #1a1a18;
+    color: #fff;
+}
+
+.page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.page-ellipsis {
+    font-size: 13px;
+    color: #b4b2a9;
+    padding: 0 4px;
+}
+
