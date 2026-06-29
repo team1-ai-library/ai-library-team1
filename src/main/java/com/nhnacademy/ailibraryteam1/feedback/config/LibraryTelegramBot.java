@@ -1,20 +1,17 @@
 package com.nhnacademy.ailibraryteam1.feedback.config;
 
+import com.nhnacademy.ailibraryteam1.feedback.command.TelegramCommandHandler;
 import com.nhnacademy.ailibraryteam1.feedback.dto.CallbackResult;
-import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramBookSearchResult;
 import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramCallbackInfo;
-import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramMessageInfo;
-import com.nhnacademy.ailibraryteam1.feedback.keyboard.TelegramKeyboardFactory;
 import com.nhnacademy.ailibraryteam1.feedback.usecase.CallbackUpdateUseCase;
-import com.nhnacademy.ailibraryteam1.feedback.usecase.TelegramBookSearchUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -22,46 +19,65 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class LibraryTelegramBot extends TelegramLongPollingBot {
     private final TelegramBotProperties telegramBotProperties;
     private final CallbackUpdateUseCase callbackUpdateUseCase;
-    private final TelegramBookSearchUseCase telegramBookSearchUseCase;
+    private final Map<String, TelegramCommandHandler> handlerMap;
 
     @Autowired
     public LibraryTelegramBot(
             TelegramBotProperties telegramBotProperties,
             CallbackUpdateUseCase callbackUpdateUseCase,
-            TelegramBookSearchUseCase telegramBookSearchUseCase
+            List<TelegramCommandHandler> handlers // 스프링 컨테이너가 빈으로 생성된 TelegramCommandHandler 목록을 주입
     ) {
         super(telegramBotProperties.token());
         this.telegramBotProperties = telegramBotProperties;
         this.callbackUpdateUseCase = callbackUpdateUseCase;
-        this.telegramBookSearchUseCase = telegramBookSearchUseCase;
+        this.handlerMap = handlers.stream()
+                .collect(Collectors.toMap(TelegramCommandHandler::getCommand, h -> h));
         
         registerBotCommands();
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-
+        // 콜백 쿼리 처리
         if (update.hasCallbackQuery()) {
             TelegramCallbackInfo info = TelegramCallbackInfo.from(update);
-
             handleCallbackQuery(info);
             return;
         }
 
-        String userInput = update.getMessage().getText().trim();
-
+        // 사용자 입력 처리
         if (update.hasMessage() && update.getMessage().hasText()) {
-            if (userInput.startsWith("/search ")) {
-                String query = userInput.substring("/search ".length()).trim();
-                TelegramMessageInfo info = TelegramMessageInfo.from(update, query);
+            String userInput = update.getMessage().getText().trim();
+            Long chatId = update.getMessage().getChatId();
 
-                handleSearch(info);
+            if (userInput.startsWith("/")) {
+                // 사용자 입력에서 명령어와 인자 분리
+                String[] parts = userInput.split("\\s+", 2);
+                String command = parts[0].toLowerCase();
+                String argument = parts.length > 1 ? parts[1].trim() : "";
+
+                // 명령어에 해당하는 핸들러 탐색
+                TelegramCommandHandler handler = handlerMap.get(command);
+
+                // 핸들러 실행
+                if (handler != null) {
+                    executeResponses(handler.handle(update, argument));
+                } else {
+                    executeResponses(List.of(SendMessage.builder()
+                            .chatId(chatId)
+                            .text("알 수 없는 명령어입니다. `/help`를 입력해 보세요.")
+                            .build()));
+                }
+            } else {
+                // TODO: 일반 자연어 처리 로직 추가
             }
         }
     }
@@ -71,42 +87,20 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
         return telegramBotProperties.username();
     }
 
-    private void handleSearch(TelegramMessageInfo info) {
-        List<TelegramBookSearchResult> result = telegramBookSearchUseCase.search(info);
-
-        result.forEach(book -> {
-            String caption = String.format("""
-                제목: %s
-                작가: %s
-                출판사: %s
-                연관도: %d%%
-                선호도: %s
-                이유: %s
-                """, book.title(), book.authorName(), book.publisherName(), book.relevance(), book.getPreferencePercent(), book.reason());
-
+    private void executeResponses(List<PartialBotApiMethod<?>> responses) {
+        if (responses == null) return;
+        for (PartialBotApiMethod<?> response : responses) {
+            // this.execute(response)로 해결 불가 -> instanceof로 분기 필요
             try {
-                if (book.imageUrl() == null || book.imageUrl().isBlank()) {
-                    SendMessage message = SendMessage.builder()
-                            .chatId(info.chatId())
-                            .text(caption)
-                            .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(book.id()))
-                            .build();
-
-                    this.execute(message);
-                } else {
-                    SendPhoto sendPhoto = SendPhoto.builder()
-                            .chatId(info.chatId())
-                            .photo(new InputFile(book.imageUrl()))
-                            .caption(caption)
-                            .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(book.id()))
-                            .build();
-
+                if (response instanceof SendMessage sendMessage) {
+                    this.execute(sendMessage);
+                } else if (response instanceof SendPhoto sendPhoto) {
                     this.execute(sendPhoto);
                 }
             } catch (TelegramApiException e) {
-                log.error("도서 검색 중 오류 발생: {}", e.getMessage());
+                log.error("메시지 전송 실패: {}", e.getMessage(), e);
             }
-        });
+        }
     }
 
     private void handleCallbackQuery(TelegramCallbackInfo info) {
@@ -141,6 +135,8 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
 
     private void registerBotCommands() {
         List<BotCommand> commands = List.of(
+                new BotCommand("start", "봇 시작 및 환영 메시지"),
+                new BotCommand("help", "사용 방법 안내"),
                 new BotCommand("search", "도서 RAG 추천 검색 (예: /search 자바)")
         );
 
