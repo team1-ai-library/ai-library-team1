@@ -10,9 +10,10 @@ public record TelegramBookSearchResult(
         String publisherName,
         String imageUrl,
         int relevance,
-        String reason
+        String reason,
+        Double preferenceScore
 ) {
-    public static TelegramBookSearchResult of(Book book, BookAiRecommendationResponse aiResponse) {
+    public static TelegramBookSearchResult of(Book book, BookAiRecommendationResponse aiResponse, Double preferenceScore) {
         return new TelegramBookSearchResult(
                 book.getId(),
                 book.getTitle(),
@@ -20,7 +21,16 @@ public record TelegramBookSearchResult(
                 book.getPublisherName(),
                 book.getImageUrl(),
                 aiResponse.relevance(),
-                aiResponse.why()
+                aiResponse.why(),
+                preferenceScore
         );
+    }
+
+    public String getPreferencePercent() {
+        if (preferenceScore == null || preferenceScore <= 0.0) {
+            return "정보 없음 (평가 부족)";
+        }
+
+        return String.format("%.1f%%", preferenceScore * 100);
     }
 }
