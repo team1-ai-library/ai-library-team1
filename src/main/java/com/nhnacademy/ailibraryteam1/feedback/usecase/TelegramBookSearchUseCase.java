@@ -24,7 +24,9 @@ public class TelegramBookSearchUseCase {
     public List<TelegramBookSearchResult> search(TelegramMessageInfo info) {
         queryCacheService.putRecentQuery(info.chatId(), info.text());
 
-        List<BookAiRecommendationResponse> result = bookRagService.recommendBooks(info.text(), "ollama");
+        // 텔레그램 대화 저장, maxMessage 10건
+        String conversationId = "telegram-%s".formatted(info.chatId());
+        List<BookAiRecommendationResponse> result = bookRagService.recommendBooks(info.text(), "ollama", conversationId);
 
         List<Long> bookIds = result.stream()
                 .map(BookAiRecommendationResponse::id)

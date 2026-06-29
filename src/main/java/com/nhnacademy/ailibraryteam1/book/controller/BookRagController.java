@@ -2,6 +2,7 @@ package com.nhnacademy.ailibraryteam1.book.controller;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookAiRecommendationResponse;
 import com.nhnacademy.ailibraryteam1.book.service.BookRagService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,13 @@ public class BookRagController {
     @GetMapping("/books/recommend/{model}")
     public ResponseEntity<List<BookAiRecommendationResponse>> recommend(
             @PathVariable String model,
-            @RequestParam String question) {
+            @RequestParam String question,
+            HttpSession session) {
+
+        String conversationId = "web-%s".formatted(session.getId());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.bookRagService.recommendBooks(question, model));
+                .body(this.bookRagService.recommendBooks(question, model, conversationId));
     }
 }
