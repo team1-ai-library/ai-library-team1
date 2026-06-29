@@ -27,6 +27,19 @@ spring:
     hibernate:
       ddl-auto: update
 
+  rabbitmq:
+    host: ${rabbitmq-host}      # 로컬 Docker
+    port: ${rabbitmq-port}           # AMQP 포트
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    # 운영 서버로 바꿀 때는 host만 변경
+    # host: 실제서버IP 또는 AWS MQ 주소
+
+    listener:
+      simple:
+        acknowledge-mode: manual   # manual ACK (권장)
+        prefetch: 10               # Consumer당 최대 처리 수
+
   ai:
     openai:
       base-url: https://emb.java21.net
@@ -59,6 +72,10 @@ spring:
             data4library:
               url: http://localhost:8081/sse
         initialized: false
+
+local-ai:
+  base-url: ${local-ai-base-url}
+  model: mlx-community/Qwen3-4B-4bit
 
 init:
   book-file: data/BOOK_DB_202112_filled.csv
