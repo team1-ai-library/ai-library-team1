@@ -54,7 +54,6 @@ public class BookRagService {
 
     public List<BookAiRecommendationResponse> recommendBooks(String question, String model, String conversationId) {
 
-        ChatClient chatClient = this.selectClient(model);
         log.info("[BookRagService] RAG 추천 시작 - 질문: {}, 모델: {}", question, model);
 
         // RETRIEVAL_K개 요청 -> 내부에서 이미 RRF 정렬된 상태로 옴
@@ -74,14 +73,20 @@ public class BookRagService {
         List<BookSearchResponse> topKBooks = this.selectTopKBooks(books);
         log.info("[BookRagService] Top-K 선정 완료 - {}권 -> {}권", books.size(), topKBooks.size());
 
+        return recommendBooksWithCandidates(question, model, topKBooks);
+    }
+
+    // 리랭킹된 도서 목록을 외부에서 주입받기 위해 메서드 분리
+    public List<BookAiRecommendationResponse> recommendBooksWithCandidates(String question, String model, List<BookSearchResponse> topKBooks) {
+
         if (topKBooks.isEmpty()) {
-            log.warn("[BookRagService] RRF 필터링 후 도서가 없습니다 - 질문: {}", question);
+            log.warn("[BookRagService] 추천 대상 도서가 없습니다 - 질문: {}", question);
             return List.of();
         }
 
+        ChatClient chatClient = this.selectClient(model);
         String context = this.buildContext(topKBooks);
         log.debug("[BookRagService] 컨텍스트 생성 완료 - 길이: {} 자", context.length());
-
 
         log.info("[BookRagService] AI 모델 호출 시작");
         try {
