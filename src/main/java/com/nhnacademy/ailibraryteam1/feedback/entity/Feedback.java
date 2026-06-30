@@ -47,4 +47,8 @@ public class Feedback {
     public double getFeedbackScore() {
         return type.getScore();
     }
+
+    public void updateType(FeedbackType type) {
+        this.type = type;
+    }
 }

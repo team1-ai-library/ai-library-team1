@@ -37,7 +37,7 @@ public class TelegramBookSearchUseCase {
     private static final double GLOBAL_FEEDBACK_WEIGHT = 0.01;
 
     public List<TelegramBookSearchResult> search(TelegramMessageInfo info) {
-        queryCacheService.putRecentQuery(info.chatId(), info.text());
+        queryCacheService.putRecentQuery(info.chatId(), info.messageId(), info.text());
 
         String conversationId = "telegram-%s".formatted(info.chatId());
 
@@ -68,7 +68,7 @@ public class TelegramBookSearchUseCase {
                 .toList();
 
         // 4. RAG 서비스 호출 (리랭킹된 도서 전달)
-        List<BookAiRecommendationResponse> result = bookRagService.recommendBooksWithCandidates(info.text(), "ollama", topKBooks, conversationId);
+        List<BookAiRecommendationResponse> result = bookRagService.recommendBooksWithCandidates(info.text(), "local", topKBooks, conversationId);
 
         List<Long> bookIds = result.stream()
                 .map(BookAiRecommendationResponse::id)

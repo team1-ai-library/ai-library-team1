@@ -47,7 +47,7 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
         if (apiResponse == null || apiResponse.isBlank()) {
             return List.of(SendMessage.builder()
                     .chatId(chatId)
-                    .text("API 호출 중 오류가 발생했습니다. 다시 시도해주세요.")
+                    .text("답변 생성 중 오류가 발생했습니다. 다시 시도해주세요.")
                     .build());
         }
         

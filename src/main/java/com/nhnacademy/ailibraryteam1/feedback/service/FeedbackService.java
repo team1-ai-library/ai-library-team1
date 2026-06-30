@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +25,21 @@ public class FeedbackService {
     private static final int MIN_FEEDBACK_THRESHOLD = 3;
 
     @Transactional
-    public void registerFeedback(Feedback feedback) {
-        if (feedbackRepository.existsByChatIdAndBookIdAndQuery(feedback.getChatId(), feedback.getBookId(), feedback.getQuery())) {
-            throw new BusinessException(ErrorCode.FEEDBACK_DUPLICATED);
-        }
+    public void registerOrUpdateFeedback(Feedback feedback) {
+        Optional<Feedback> existingFeedback = feedbackRepository.findByChatIdAndBookIdAndQuery(feedback.getChatId(), feedback.getBookId(), feedback.getQuery());
 
-        feedbackRepository.save(feedback);
+        // 피드백이 이미 존재하는 경우
+        existingFeedback.ifPresentOrElse(f -> {
+            if (f.getType() == feedback.getType()) {
+                // 동일한 타입이면 중복 알림 던지기
+                throw new BusinessException(ErrorCode.FEEDBACK_DUPLICATED);
+            } else {
+                // 다른 타입이라면 피드백 업데이트
+                f.updateType(feedback.getType());
+            }
+        },
+        // 피드백이 존재하지 않는 경우 저장
+        () -> feedbackRepository.save(feedback));
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,7 @@ package com.nhnacademy.ailibraryteam1.feedback.config;
 import com.nhnacademy.ailibraryteam1.feedback.command.TelegramCommandHandler;
 import com.nhnacademy.ailibraryteam1.feedback.dto.CallbackResult;
 import com.nhnacademy.ailibraryteam1.feedback.dto.TelegramCallbackInfo;
+import com.nhnacademy.ailibraryteam1.feedback.keyboard.TelegramKeyboardFactory;
 import com.nhnacademy.ailibraryteam1.feedback.usecase.CallbackUpdateUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -77,7 +79,8 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
                             .build()));
                 }
             } else {
-                // TODO: 일반 자연어 처리 로직 추가
+                // 자연어 -> ChatClient 챗봇 사용
+                executeResponses(handlerMap.get("/library").handle(update, userInput));
             }
         }
     }
@@ -114,6 +117,18 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
                     .build();
 
             this.execute(answer);
+
+            if (result.success()) {
+                EditMessageReplyMarkup editMarkup = EditMessageReplyMarkup.builder()
+                        .chatId(info.chatId())
+                        .messageId((int) info.callbackMessageId())
+                        .replyMarkup(TelegramKeyboardFactory.updatedFeedbackKeyboard(
+                                info.messageId(), info.bookId(), info.type())) // 현재 누른 타입을 선택된 상태로 갱신
+                        .build();
+
+                this.execute(editMarkup);
+            }
+
         } catch (Exception e) {
             answerCallbackWithError(info.callbackQueryId());
         }
@@ -138,7 +153,7 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
                 new BotCommand("start", "봇 시작 및 환영 메시지"),
                 new BotCommand("help", "사용 방법 안내"),
                 new BotCommand("search", "도서 RAG 추천 검색 (예: /search 자바)"),
-                new BotCommand("library", "도서나루 API 호출")
+                new BotCommand("library", "도서관 챗봇")
         );
 
         try {
