@@ -78,7 +78,7 @@ public class SearchCommandHandler implements TelegramCommandHandler {
             작가: %s
             출판사: %s
             연관도: %d%%
-            취향 일치도: %s
+            선호도: %s
             추천 이유: %s
             """, book.title(), book.authorName(), book.publisherName(), book.relevance(), book.getPreferencePercent(), book.reason());
     }
