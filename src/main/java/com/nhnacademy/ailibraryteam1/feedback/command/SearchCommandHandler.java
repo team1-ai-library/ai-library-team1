@@ -55,7 +55,7 @@ public class SearchCommandHandler implements TelegramCommandHandler {
                 SendMessage message = SendMessage.builder()
                         .chatId(chatId)
                         .text(caption)
-                        .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(book.id()))
+                        .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(info.messageId(), book.id()))
                         .build();
                 responses.add(message);
             } else {
@@ -63,7 +63,7 @@ public class SearchCommandHandler implements TelegramCommandHandler {
                         .chatId(chatId)
                         .photo(new InputFile(book.imageUrl()))
                         .caption(caption)
-                        .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(book.id()))
+                        .replyMarkup(TelegramKeyboardFactory.createdFeedbackKeyboard(info.messageId(), book.id()))
                         .build();
                 responses.add(photo);
             }
