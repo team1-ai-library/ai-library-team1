@@ -54,7 +54,6 @@ public class TelegramBookSearchUseCase {
 
         // 2. 글로벌 선호도 점수와 텔레그램 사용자 취향 선호도 점수 가져오기
         Map<Long, Double> personalizationScores = personalizationService.getPersonalizationScores(info.chatId(), candidateIds);
-
         Map<Long, Double> globalScore = feedbackService.getGlobalFeedbackScores(candidateIds);
 
         // 3. RRF 점수 + 개인화 점수로 리랭킹 후 최종 Top-5 선정
