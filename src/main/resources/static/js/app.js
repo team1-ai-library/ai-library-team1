@@ -21,45 +21,47 @@ document.getElementById('search-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch(0);
 });
 
-// ── 검색 상태 ──
-let currentKeyword = '';
-let currentType = 'keyword';
-let currentModel = 'gemini';
-
 document.getElementById('chat-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') doChat();
 });
 
+// ── 현재 검색 상태 저장 (페이징용) ──
+let currentKeyword = '';
+let currentType = 'keyword';
+let currentModel = 'gemini';
+const PAGE_SIZE = 20;
 
 // ── 도서 검색 ──
-async function doSearch(page = 0) {
-    if (page === 0) {
-        currentKeyword = document.getElementById('search-input').value.trim();
-        currentType = document.querySelector('input[name=search-type]:checked').value;
-        currentModel = document.getElementById('model-select').value;
-    }
+async function doSearch(page) {
+    const keyword = document.getElementById('search-input').value.trim();
+    if (!keyword) return;
 
-    if (!currentKeyword) return;
+    currentKeyword = keyword;
+    currentType = document.querySelector('input[name=search-type]:checked').value;
+    currentModel = document.getElementById('model-select').value;
 
     const loading = document.getElementById('search-loading');
     const error = document.getElementById('search-error');
     const results = document.getElementById('search-results');
+    const pagination = document.getElementById('pagination');
 
     loading.style.display = 'block';
     error.style.display = 'none';
     results.innerHTML = '';
+    pagination.innerHTML = '';
 
     try {
         if (currentType === 'rag') {
-            const res = await fetch(`/books/recommend/${currentModel}?question=${encodeURIComponent(currentKeyword)}`);
+            const res = await fetch(`/api/books/recommend/${currentModel}?question=${encodeURIComponent(keyword)}`);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             renderRag(data, results);
         } else {
-            const res = await fetch(`/books/search?keyword=${encodeURIComponent(currentKeyword)}&searchType=${currentType}&page=${page}&size=10`);
+            const res = await fetch(`/api/books/search?keyword=${encodeURIComponent(keyword)}&searchType=${currentType}&page=${page}&size=${PAGE_SIZE}`);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             renderSearch(data, results, page);
+            renderPagination(data, page, pagination);
         }
     } catch (e) {
         error.textContent = `검색 중 오류가 발생했습니다: ${e.message}`;
@@ -70,8 +72,8 @@ async function doSearch(page = 0) {
     }
 }
 
-// ── 일반 검색 결과 렌더링 ──
-function renderSearch(data, container, currentPage) {
+// ── 일반 검색 결과 렌더링 (그리드) ──
+function renderSearch(data, container, page) {
     const books = data.content || [];
 
     if (books.length === 0) {
@@ -80,58 +82,55 @@ function renderSearch(data, container, currentPage) {
     }
 
     const total = data.totalElements || books.length;
-    const totalPages = data.totalPages || 1;
-    const pageOffset = currentPage * (data.size || 10);
+    let html = `<div class="result-meta">${total.toLocaleString()}건 (${page + 1}페이지)</div>`;
+    html += '<div class="book-grid">';
 
-    let html = `<div class="result-meta">${total.toLocaleString()}건 (${currentPage + 1} / ${totalPages} 페이지)</div>`;
+    books.forEach(book => {
+        const imgHtml = book.imageUrl
+            ? `<img class="book-card-img" src="${escapeHtml(book.imageUrl)}" alt="${escapeHtml(book.title || '')}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="book-card-img-placeholder" style="display:none;"><i class="ti ti-book" aria-hidden="true"></i></div>`
+            : `<div class="book-card-img-placeholder"><i class="ti ti-book" aria-hidden="true"></i></div>`;
 
-    books.forEach((book, i) => {
-        const content = book.bookContent
-            ? book.bookContent.substring(0, 150) + (book.bookContent.length > 150 ? '...' : '')
+        const ratingHtml = book.averageRating && book.reviewCount
+            ? `<div class="book-card-rating"><i class="ti ti-star-filled" style="font-size:11px;" aria-hidden="true"></i> ${book.averageRating.toFixed(1)} (${book.reviewCount}개)</div>`
             : '';
-
-        const ratingBadge = book.averageRating && book.reviewCount
-            ? `<span class="badge badge-rating"><i class="ti ti-star-filled" style="font-size:11px;" aria-hidden="true"></i> ${Number(book.averageRating).toFixed(1)} (${book.reviewCount}개)</span>`
-            : '';
-
-        const coverHtml = book.imageUrl
-            ? `<img class="book-cover" src="${escapeHtml(book.imageUrl)}" alt="표지" onerror="this.outerHTML='<div class=\\'book-cover-empty\\'><i class=\\'ti ti-book\\'></i></div>'">`
-            : `<div class="book-cover-empty"><i class="ti ti-book" aria-hidden="true"></i></div>`;
 
         html += `
-      <div class="book-card" onclick="openBookDetail(${book.id})">
-        ${coverHtml}
-        <div class="book-rank">${pageOffset + i + 1}</div>
-        <div class="book-info">
-          <div class="book-title">${escapeHtml(book.title || '')}</div>
-          <div class="book-meta">${escapeHtml(book.authorName || '')} · ${escapeHtml(book.publisherName || '')} ${ratingBadge}</div>
-          ${content ? `<div class="book-content">${escapeHtml(content)}</div>` : ''}
-          ${book.reviewSummary ? `<div class="book-why">${escapeHtml(book.reviewSummary.substring(0, 100))}</div>` : ''}
+      <a class="book-card" href="/books/${book.id}">
+        ${imgHtml}
+        <div class="book-card-body">
+          <div class="book-card-title">${escapeHtml(book.title || '')}</div>
+          <div class="book-card-author">${escapeHtml(book.authorName || '')}</div>
+          ${ratingHtml}
         </div>
-      </div>`;
+      </a>`;
     });
 
-    if (totalPages > 1) {
-        html += `<div class="pagination">`;
-        html += `<button class="page-btn" onclick="doSearch(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}><i class="ti ti-chevron-left"></i></button>`;
+    html += '</div>';
+    container.innerHTML = html;
+}
 
-        const start = Math.max(0, currentPage - 2);
-        const end = Math.min(totalPages - 1, currentPage + 2);
+// ── 페이징 렌더링 ──
+function renderPagination(data, currentPage, container) {
+    const totalPages = data.totalPages || 0;
+    if (totalPages <= 1) return;
 
-        if (start > 0) {
-            html += `<button class="page-btn" onclick="doSearch(0)">1</button>`;
-            if (start > 1) html += `<span class="page-ellipsis">…</span>`;
-        }
-        for (let p = start; p <= end; p++) {
-            html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="doSearch(${p})">${p + 1}</button>`;
-        }
-        if (end < totalPages - 1) {
-            if (end < totalPages - 2) html += `<span class="page-ellipsis">…</span>`;
-            html += `<button class="page-btn" onclick="doSearch(${totalPages - 1})">${totalPages}</button>`;
-        }
+    const groupSize = 5;
+    const groupStart = Math.floor(currentPage / groupSize) * groupSize;
+    const groupEnd = Math.min(groupStart + groupSize, totalPages);
 
-        html += `<button class="page-btn" onclick="doSearch(${currentPage + 1})" ${currentPage >= totalPages - 1 ? 'disabled' : ''}><i class="ti ti-chevron-right"></i></button>`;
-        html += `</div>`;
+    let html = '';
+
+    if (groupStart > 0) {
+        html += `<button class="page-btn" onclick="doSearch(${groupStart - 1})"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>`;
+    }
+
+    for (let i = groupStart; i < groupEnd; i++) {
+        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="doSearch(${i})">${i + 1}</button>`;
+    }
+
+    if (groupEnd < totalPages) {
+        html += `<button class="page-btn" onclick="doSearch(${groupEnd})"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>`;
     }
 
     container.innerHTML = html;
@@ -148,24 +147,17 @@ function renderRag(data, container) {
 
     data.forEach((item, i) => {
         html += `
-      <div class="book-card" onclick="openBookDetail(${item.id})">
-        <div class="book-rank">${i + 1}</div>
-        <div class="book-info">
-          <div class="book-title">도서 ID: ${item.id}</div>
-          <div class="book-meta">
-            <span class="badge badge-relevance">관련성 ${item.relevance}점</span>
-          </div>
-          <div class="book-why">${escapeHtml(item.why || '')}</div>
+      <a class="rag-card" href="/books/${item.id}">
+        <div class="rag-rank">${i + 1}</div>
+        <div class="rag-info">
+          <div class="rag-title">도서 ID: ${item.id}</div>
+          <div><span class="badge badge-relevance">관련성 ${item.relevance}점</span></div>
+          <div class="rag-why">${escapeHtml(item.why || '')}</div>
         </div>
-      </div>`;
+      </a>`;
     });
 
     container.innerHTML = html;
-}
-
-// ── 도서 상세 페이지 열기 ──
-function openBookDetail(id) {
-    window.open('/book-detail.html?id=' + id, '_blank');
 }
 
 // ── 챗봇 ──
@@ -196,7 +188,7 @@ async function doChat() {
     messages.scrollTop = messages.scrollHeight;
 
     try {
-        const res = await fetch(`/chat?question=${encodeURIComponent(question)}&model=ollama`);
+        const res = await fetch(`/api/chat?question=${encodeURIComponent(question)}&model=ollama`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const text = await res.text();
 

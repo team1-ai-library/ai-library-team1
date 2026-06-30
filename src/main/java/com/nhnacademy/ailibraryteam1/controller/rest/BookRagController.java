@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.controller;
+package com.nhnacademy.ailibraryteam1.controller.rest;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookAiRecommendationResponse;
 import com.nhnacademy.ailibraryteam1.book.service.BookRagService;
@@ -24,7 +24,7 @@ public class BookRagController {
      * 일반 검색은 15만 건 중 결과를 가져오니 페이징 필수지만,
      * RAG 추천은 상위 10권만 뽑아서 AI에게 넘기고, AI가 그 중에서 관련성 높은 최대 5권을 선별해서 반환하므로.
      */
-    @GetMapping("/books/recommend/{model}")
+    @GetMapping("/api/books/recommend/{model}")
     public ResponseEntity<List<BookAiRecommendationResponse>> recommend(
             @PathVariable String model,
             @RequestParam String question,

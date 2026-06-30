@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도서 상세 - AI 도서관</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+</head>
+<body>
+
+<header>
+    <a href="/" class="header-logo">
+        <i class="ti ti-books" aria-hidden="true"></i>
+        <h1>AI 도서관</h1>
+    </a>
+    <span>ai-library-team1</span>
+</header>
+
+<div id="detail-wrap" class="detail-wrap" th:attr="data-book-id=${bookId}">
+    <a href="/" class="back-btn">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i> 목록으로
+    </a>
+
+    <div class="loading" id="detail-loading">
+        <i class="ti ti-refresh"></i> 불러오는 중...
+    </div>
+    <div class="error-msg" id="detail-error"></div>
+    <div id="detail-content"></div>
+
+    <!-- 리뷰 섹션 -->
+    <div id="review-section" class="review-section">
+
+        <!-- 리뷰 통계 -->
+        <div id="review-stats"></div>
+
+        <!-- 리뷰 작성 폼 -->
+        <div class="review-form">
+            <div class="review-form-title">리뷰 작성</div>
+            <div class="review-rating-wrap">
+                <input type="radio" name="review-rating" id="r5" value="5"><label for="r5">★</label>
+                <input type="radio" name="review-rating" id="r4" value="4"><label for="r4">★</label>
+                <input type="radio" name="review-rating" id="r3" value="3"><label for="r3">★</label>
+                <input type="radio" name="review-rating" id="r2" value="2"><label for="r2">★</label>
+                <input type="radio" name="review-rating" id="r1" value="1"><label for="r1">★</label>
+            </div>
+            <textarea id="review-content" class="review-textarea" placeholder="이 도서에 대한 리뷰를 작성해주세요."></textarea>
+            <button class="review-submit-btn" onclick="submitReview()">리뷰 등록</button>
+        </div>
+
+        <!-- 리뷰 목록 -->
+        <div id="review-list"></div>
+    </div>
+</div>
+
+<script th:src="@{/js/detail.js}"></script>
+</body>
+</html>

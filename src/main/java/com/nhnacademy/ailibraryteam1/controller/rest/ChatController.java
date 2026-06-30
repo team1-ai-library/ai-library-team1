@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.controller;
+package com.nhnacademy.ailibraryteam1.controller.rest;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class ChatController {
         this.ollamaChatClient = ollamaChatClient;
     }
 
-    @GetMapping("/chat")
+    @GetMapping("/api/chat")
     public ResponseEntity<String> chat(@RequestParam String question,
                                        @RequestParam(defaultValue = "ollama") String model,
                                        HttpSession session) {
@@ -33,8 +33,7 @@ public class ChatController {
         log.info("[ChatController] 질문: {}, 모델: {}", question, model);
 
         ChatClient chatClient;
-        if (model.equalsIgnoreCase("")) {
-
+        if (model.equalsIgnoreCase("gemini")) {
             chatClient = this.geminiChatClient;
         } else {
             chatClient = this.ollamaChatClient;
