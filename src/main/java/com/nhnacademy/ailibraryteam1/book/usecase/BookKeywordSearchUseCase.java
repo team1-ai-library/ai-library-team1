@@ -6,6 +6,7 @@ import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 @UseCase
+@Slf4j
 @RequiredArgsConstructor
 public class BookKeywordSearchUseCase {
 
@@ -21,6 +23,8 @@ public class BookKeywordSearchUseCase {
     @Transactional(readOnly = true)
     public Page<BookSearchResponse> searchByKeyword(String isbn, String keyword, Pageable pageable) {
 
+        log.info("[BookKeywordSearchUseCase] 키워드 검색 - isbn: {}, keyword: {}", isbn, keyword);
+
         boolean isbnExists = (Objects.nonNull(isbn) && !isbn.isBlank());
         boolean keywordExists = (Objects.nonNull(keyword) && !keyword.isBlank());
 
@@ -28,6 +32,10 @@ public class BookKeywordSearchUseCase {
             throw new BusinessException(ErrorCode.SEARCH_CONDITION_REQUIRED);
         }
 
-        return this.bookQuerydslRepository.searchByKeyword(isbn, keyword, pageable);
+        Page<BookSearchResponse> result = this.bookQuerydslRepository.searchByKeyword(isbn, keyword, pageable);
+
+        log.info("[BookKeywordSearchUseCase] 키워드 검색 완료 - 검색된 도서 수: {}", result.getTotalElements());
+
+        return result;
     }
 }
