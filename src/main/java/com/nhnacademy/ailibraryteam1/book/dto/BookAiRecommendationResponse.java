@@ -2,7 +2,7 @@ package com.nhnacademy.ailibraryteam1.book.dto;
 
 /**
  * AI 추천 응답 DTO
- * AI가 생성한 추천 결과를 담음
+ * AI가 직접 생성한 원본 추천 결과 (id, relevance, why만)
  */
 public record BookAiRecommendationResponse(
         long id, // 도서 ID

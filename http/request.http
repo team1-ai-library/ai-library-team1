@@ -56,4 +56,4 @@ GET {{host}}/api/books/search?keyword=자격증 취득&searchType=hybrid&page=0&
 
 ### RAG (ollama)
 # @no-redirect
-GET {{host}}/api/books/recommend/ollama?question=공부
+GET {{host}}/api/books/recommend/local?question=공부

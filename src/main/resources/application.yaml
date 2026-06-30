@@ -84,5 +84,5 @@ init:
 telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN}
-    enabled: true
+    enabled: false
     username: T1AILibBot

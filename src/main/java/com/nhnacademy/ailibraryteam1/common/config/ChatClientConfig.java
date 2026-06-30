@@ -53,28 +53,6 @@ public class ChatClientConfig {
                 .build();
     }
 
-//    @Bean("reviewSummarizerChatClient")
-//    public ChatClient reviewSummarizerChatClient() {
-//        BufferingClientHttpRequestFactory requestFactory =
-//                new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//
-//        OpenAiApi openAiApi = OpenAiApi.builder()
-//                .baseUrl(localAiBaseUrl)
-//                .apiKey("local")
-//                .restClientBuilder(RestClient.builder().requestFactory(requestFactory))
-//                .build();
-//        OpenAiChatModel chatModel = OpenAiChatModel.builder()
-//                .openAiApi(openAiApi)
-//                .defaultOptions(OpenAiChatOptions.builder()
-//                        .model(localAiModel)
-//                        .maxTokens(2000)
-//                        .build())
-//                .build();
-//        return ChatClient.builder(chatModel)
-//                .defaultAdvisors(new SimpleLoggerAdvisor())
-//                .build();
-//    }
-
     @Bean("localChatClient")
     public ChatClient localChatClient() {
         BufferingClientHttpRequestFactory requestFactory =

@@ -20,6 +20,7 @@ public class ChatController {
 
     public ChatController(@Qualifier("geminiChatClient") ChatClient geminiChatClient,
                           @Qualifier("ollamaChatClient") ChatClient ollamaChatClient) {
+
         this.geminiChatClient = geminiChatClient;
         this.ollamaChatClient = ollamaChatClient;
     }

@@ -1,11 +1,12 @@
 package com.nhnacademy.ailibraryteam1.controller.rest;
 
-import com.nhnacademy.ailibraryteam1.book.dto.BookAiRecommendationResponse;
+import com.nhnacademy.ailibraryteam1.book.dto.BookRecommendationResult;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.search.SearchType;
 import com.nhnacademy.ailibraryteam1.book.service.BookRagService;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookHybridSearchUseCase;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookKeywordSearchUseCase;
+import com.nhnacademy.ailibraryteam1.book.usecase.BookRecommendWithDetailUseCase;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookVectorSearchUseCase;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
@@ -27,7 +28,7 @@ public class BookSearchController {
     private final BookKeywordSearchUseCase bookKeywordSearchUseCase;
     private final BookVectorSearchUseCase bookVectorSearchUseCase;
     private final BookHybridSearchUseCase bookHybridSearchUseCase;
-    private final BookRagService bookRagService;
+    private final BookRecommendWithDetailUseCase bookRecommendWithDetailUseCase;
 
     @GetMapping("search")
     public ResponseEntity<Page<BookSearchResponse>> search(
@@ -57,7 +58,7 @@ public class BookSearchController {
      * RAG 추천은 상위 10권만 뽑아서 AI에게 넘기고, AI가 그 중에서 관련성 높은 최대 5권을 선별해서 반환하므로.
      */
     @GetMapping("/recommend/{model}")
-    public ResponseEntity<List<BookAiRecommendationResponse>> recommend(
+    public ResponseEntity<List<BookRecommendationResult>> recommend(
             @PathVariable String model,
             @RequestParam String question,
             HttpSession session) {
@@ -66,6 +67,6 @@ public class BookSearchController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.bookRagService.recommendBooks(question, model, conversationId));
+                .body(this.bookRecommendWithDetailUseCase.execute(question, model, conversationId));
     }
 }

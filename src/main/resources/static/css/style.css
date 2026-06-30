@@ -725,3 +725,34 @@ header span {
     border-radius: 8px;
     border-left: 3px solid #b4b2a9;
 }
+
+.rag-card-img-wrap {
+    width: 56px;
+    flex-shrink: 0;
+}
+
+.rag-card-img {
+    width: 56px;
+    height: 76px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+.rag-card-img-placeholder {
+    width: 56px;
+    height: 76px;
+    background: #f5f4f0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d3d1c7;
+    font-size: 18px;
+}
+
+.rag-meta {
+    font-size: 13px;
+    color: #888780;
+    margin-bottom: 6px;
+}

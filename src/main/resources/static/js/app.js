@@ -146,11 +146,19 @@ function renderRag(data, container) {
     let html = `<div class="result-meta">AI 추천 도서 ${data.length}건</div>`;
 
     data.forEach((item, i) => {
+        const imgHtml = item.imageUrl
+            ? `<img class="rag-card-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.title || '')}"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="rag-card-img-placeholder" style="display:none;"><i class="ti ti-book" aria-hidden="true"></i></div>`
+            : `<div class="rag-card-img-placeholder"><i class="ti ti-book" aria-hidden="true"></i></div>`;
+
         html += `
       <a class="rag-card" href="/books/${item.id}">
         <div class="rag-rank">${i + 1}</div>
+        <div class="rag-card-img-wrap">${imgHtml}</div>
         <div class="rag-info">
-          <div class="rag-title">도서 ID: ${item.id}</div>
+          <div class="rag-title">${escapeHtml(item.title || '')}</div>
+          <div class="rag-meta">${escapeHtml(item.authorName || '')} · ${escapeHtml(item.publisherName || '')}</div>
           <div><span class="badge badge-relevance">관련성 ${item.relevance}점</span></div>
           <div class="rag-why">${escapeHtml(item.why || '')}</div>
         </div>
