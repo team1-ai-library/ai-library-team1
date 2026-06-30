@@ -1,49 +1,49 @@
 @host=http://localhost:8080
 
 ### 키워드 검색 (ISBN X)
-GET {{host}}/books/search?keyword=파이썬&searchType=keyword
+GET {{host}}/api/books/search?keyword=파이썬&searchType=keyword
 
 ### ISBN으로 검색
-GET {{host}}/books/search?isbn=9791168120877&searchType=keyword
+GET {{host}}/api/books/search?isbn=9791168120877&searchType=keyword
 
 ### ISBN과 keyword를 동시에 보냈을 때 (ISBN이 우선 적용되어야 함)
-GET {{host}}/books/search?isbn=9791168120877&keyword=창희형안녕&searchType=keyword
+GET {{host}}/api/books/search?isbn=9791168120877&keyword=창희형안녕&searchType=keyword
 
 ### 검색 조건 없이 호출 (400 에러가 나야 함)
-GET {{host}}/books/search?searchType=keyword
+GET {{host}}/api/books/search?searchType=keyword
 
 ### 페이징 확인 (2페이지, 페이지당 5건)
-GET {{host}}/books/search?keyword=에세이&searchType=keyword&page=1&size=5
+GET {{host}}/api/books/search?keyword=에세이&searchType=keyword&page=1&size=5
 
 ### 저자명으로 검색되는지 확인
-GET {{host}}/books/search?keyword=차도하&searchType=keyword
+GET {{host}}/api/books/search?keyword=차도하&searchType=keyword
 
 ### book_content GIN 전문 검색 확인 (제목/저자에는 없는 단어)
-GET {{host}}/books/search?keyword=데이터&searchType=keyword
+GET {{host}}/api/books/search?keyword=데이터&searchType=keyword
 
 ### 제목+저자 LIKE + book_content GIN 동시 동작 확인
-GET {{host}}/books/search?keyword=파이썬&searchType=keyword
+GET {{host}}/api/books/search?keyword=파이썬&searchType=keyword
 
 ### 벡터 검색 - 일반 자연어 쿼리
-GET {{host}}/books/search?keyword=컴퓨터가 어떻게 작동하는지 알고 싶어&searchType=vector
+GET {{host}}/api/books/search?keyword=컴퓨터가 어떻게 작동하는지 알고 싶어&searchType=vector
 
 ### 벡터 검색 - 짧은 키워드
-GET {{host}}/books/search?keyword=파이썬 프로그래밍&searchType=vector
+GET {{host}}/api/books/search?keyword=파이썬 프로그래밍&searchType=vector
 
 ### 벡터 검색 - 감성적인 질의 (키워드 검색과 결과 차이 확인용)
-GET {{host}}/books/search?keyword=마음이 힘들 때 위로가 되는 책&searchType=vector
+GET {{host}}/api/books/search?keyword=마음이 힘들 때 위로가 되는 책&searchType=vector
 
 ### 키워드 검색과 비교 (같은 키워드로 결과 차이 확인)
-GET {{host}}/books/search?keyword=파이썬&searchType=keyword
+GET {{host}}/api/books/search?keyword=파이썬&searchType=keyword
 
 ### 벡터 검색 - 검색 조건 없이 호출 (400 에러가 나야 함)
-GET {{host}}/books/search?searchType=vector
+GET {{host}}/api/books/search?searchType=vector
 
 ### 벡터 검색 - 페이징 확인
-GET {{host}}/books/search?keyword=인공지능&searchType=vector&page=0&size=5
+GET {{host}}/api/books/search?keyword=인공지능&searchType=vector&page=0&size=5
 
 ### 리뷰 등록
-POST {{host}}/books/6840342001/reviews
+POST {{host}}/api/books/6840342001/reviews
 Content-Type: application/json
 
 {
@@ -52,8 +52,8 @@ Content-Type: application/json
 }
 
 ### 하이브리드 검색
-GET {{host}}/books/search?keyword=자격증 취득&searchType=hybrid&page=0&size=5
+GET {{host}}/api/books/search?keyword=자격증 취득&searchType=hybrid&page=0&size=5
 
 ### RAG (ollama)
 # @no-redirect
-GET {{host}}/books/recommend/ollama?question=초보자를 위한 파이썬 책 추천해줘
+GET {{host}}/api/books/recommend/ollama?question=초보자를 위한 파이썬 책 추천해줘

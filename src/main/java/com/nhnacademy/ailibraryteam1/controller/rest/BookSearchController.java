@@ -1,4 +1,4 @@
-package com.nhnacademy.ailibraryteam1.book.controller;
+package com.nhnacademy.ailibraryteam1.controller.rest;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.search.SearchType;
@@ -24,7 +24,7 @@ public class BookSearchController {
     private final BookVectorSearchUseCase bookVectorSearchUseCase;
     private final BookHybridSearchUseCase bookHybridSearchUseCase;
 
-    @GetMapping("/books/search")
+    @GetMapping("/api/books/search")
     public ResponseEntity<Page<BookSearchResponse>> search(
             @RequestParam(required = false) String isbn,
             @RequestParam(required = false) String keyword,
