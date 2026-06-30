@@ -9,6 +9,7 @@ import java.util.List;
 
 @Component
 public class HelpCommandHandler implements TelegramCommandHandler {
+
     @Override
     public String getCommand() {
         return "/help";

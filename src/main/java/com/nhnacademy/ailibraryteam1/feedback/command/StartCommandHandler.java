@@ -9,6 +9,7 @@ import java.util.List;
 
 @Component
 public class StartCommandHandler implements TelegramCommandHandler {
+
     @Override
     public String getCommand() {
         return "/start";
