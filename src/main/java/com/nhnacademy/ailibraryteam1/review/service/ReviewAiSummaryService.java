@@ -6,25 +6,12 @@ import com.nhnacademy.ailibraryteam1.review.entity.BookReviewAiSummary;
 import com.nhnacademy.ailibraryteam1.review.repository.ReviewAiSummaryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewAiSummaryService {
     private final ReviewAiSummaryRepository reviewAiSummaryRepository;
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public BookReviewAiSummary register(BookReviewAiSummary summary) {
-        return reviewAiSummaryRepository.save(summary);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<BookReviewAiSummary> findSummary(long bookId) {
-        return reviewAiSummaryRepository.findById(bookId);
-    }
 
     @Transactional(readOnly = true)
     public BookReviewAiSummary getSummary(long bookId) {

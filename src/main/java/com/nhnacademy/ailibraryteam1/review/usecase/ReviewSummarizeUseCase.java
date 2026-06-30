@@ -12,7 +12,6 @@ import com.nhnacademy.ailibraryteam1.review.service.ReviewSummarizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.util.List;
@@ -30,16 +29,8 @@ public class ReviewSummarizeUseCase {
     public void execute(long bookId) {
         Book book = bookService.getBook(bookId);
 
-        BookReviewAiSummary summary = reviewAiSummaryService.findSummary(bookId)
-                .orElseGet(() -> {
-                    BookReviewAiSummary newSummary = BookReviewAiSummary.create(book);
-
-                    try {
-                        return reviewAiSummaryService.register(newSummary);
-                    } catch (DataIntegrityViolationException e) {
-                        return reviewAiSummaryService.getSummary(bookId);
-                    }
-                });
+        // 이제 도서마다 기본 AI 요약 컬럼 존재
+        BookReviewAiSummary summary = reviewAiSummaryService.getSummary(bookId);
 
         // 이미 요약을 생성 중이라면 리턴
         if (summary.isGenerating()) {
