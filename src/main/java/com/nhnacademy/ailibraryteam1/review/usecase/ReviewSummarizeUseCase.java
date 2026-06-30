@@ -40,7 +40,7 @@ public class ReviewSummarizeUseCase {
 
         // 요약 생성 시작
         try {
-            summary = reviewAiSummaryService.startGenerating(summary);
+            reviewAiSummaryService.startGenerating(summary);
             log.info("리뷰 요약 생성을 시작합니다.");
         } catch (OptimisticLockingFailureException e) {
             return;

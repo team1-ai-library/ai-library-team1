@@ -2,8 +2,9 @@ package com.nhnacademy.ailibraryteam1.feedback.service;
 
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
+import com.nhnacademy.ailibraryteam1.feedback.dto.BookFeedbackCount;
 import com.nhnacademy.ailibraryteam1.feedback.entity.Feedback;
-import com.nhnacademy.ailibraryteam1.feedback.entity.FeedbackType;
+import com.nhnacademy.ailibraryteam1.feedback.repository.FeedbackQueryRepository;
 import com.nhnacademy.ailibraryteam1.feedback.repository.FeedbackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
+    private final FeedbackQueryRepository feedbackQueryRepository;
 
     // 최소 피드백 수
     private static final int MIN_FEEDBACK_THRESHOLD = 3;
@@ -46,52 +48,31 @@ public class FeedbackService {
         Map<Long, Double> scoreMap = bookIds.stream()
                 .collect(Collectors.toMap(id -> id, id -> 0.0));
 
-        // DB에서 피드백 일괄 조회
-        List<Feedback> allFeedbacks = feedbackRepository.findAllByBookIdIn(bookIds);
+        // DB에서 도서별 피드백 통계 조회
+        List<BookFeedbackCount> allFeedbacks = feedbackQueryRepository.findBookFeedbackCount(bookIds);
 
         // 도서 ID로 그룹화
-        Map<Long, List<Feedback>> globalFeedbackMap = allFeedbacks.stream()
-                .collect(Collectors.groupingBy(Feedback::getBookId));
+        Map<Long, BookFeedbackCount> globalFeedbackMap = allFeedbacks.stream()
+                .collect(Collectors.toMap(BookFeedbackCount::bookId, count -> count));
 
 
         bookIds.forEach(bookId -> {
-            List<Feedback> feedbacks = globalFeedbackMap.getOrDefault(bookId, List.of());
+            BookFeedbackCount count = globalFeedbackMap.get(bookId);
 
-            if (feedbacks.size() < MIN_FEEDBACK_THRESHOLD) {
+            // 피드백 개수가 너무 적은 경우는 반영 X
+            if (count == null || count.totalCount() < MIN_FEEDBACK_THRESHOLD) {
                 scoreMap.put(bookId, 0.0);
                 return;
             }
 
-            long goodCount = feedbacks.stream()
-                    .filter(f -> f.getType() == FeedbackType.GOOD)
-                    .count();
-            long badCount = feedbacks.size() - goodCount;
+            long goodCount = count.goodCount();
+            long badCount = count.totalCount() - goodCount;
 
-            double scoreRatio = (double) (goodCount - badCount) / feedbacks.size();
+            double scoreRatio = (double) (goodCount - badCount) / count.totalCount();
 
             scoreMap.put(bookId, scoreRatio);
         });
 
         return scoreMap;
-    }
-
-    // 도서 목록에 대한 사용자 선호도 점수
-    @Transactional(readOnly = true)
-    public Map<Long, Double> getPersonalizationFeedbackScores(long chatId, List<Long> bookIds) {
-        if (bookIds == null || bookIds.isEmpty()) {
-            return Map.of();
-        }
-
-        List<Feedback> userFeedbacks = feedbackRepository.findAllByChatIdAndBookIdIn(chatId, bookIds);
-
-        Map<Long, Double> userFeedbackScoreMap = userFeedbacks.stream()
-                .collect(Collectors.toMap(
-                        Feedback::getBookId,
-                        Feedback::getFeedbackScore,
-                        Double::sum // 동일한 도서에 대한 피드백 점수 합산
-                ));
-
-        return bookIds.stream()
-                .collect(Collectors.toMap(id -> id, id -> userFeedbackScoreMap.getOrDefault(id, 0.0)));
     }
 }
