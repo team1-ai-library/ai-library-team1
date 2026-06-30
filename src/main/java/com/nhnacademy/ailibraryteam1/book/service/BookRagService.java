@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-// 도서 Recommend
 @Service
 @Slf4j
 public class BookRagService {
@@ -62,7 +61,7 @@ public class BookRagService {
         // RETRIEVAL_K개 요청 -> 내부에서 이미 RRF 정렬된 상태로 옴
         Pageable pageable = PageRequest.of(0, RETRIEVAL_K);
         List<BookSearchResponse> books = hybridSearchUseCase
-                .searchByHybrid(question, pageable)
+                .searchByHybridForRag(question, pageable)
                 .getContent();
 
         log.info("[BookRagService] 하이브리드 검색 완료 - 검색된 도서 수: {}", books.size());
@@ -177,7 +176,6 @@ public class BookRagService {
                 .filter(book -> Objects.nonNull(book.rrfScore()))
                 .filter(book -> book.rrfScore() >= RRF_THRESHOLD)
                 .limit(RERANK_K) // 이미 RRF 정렬된 상태니까 바로 자름
-                .peek(book -> log.debug("[BookRagService] 선정된 도서 - 제목: {}, RRF: {}", book.title(), book.rrfScore()))
                 .toList();
     }
 }

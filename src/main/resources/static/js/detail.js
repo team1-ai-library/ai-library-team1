@@ -52,7 +52,7 @@ async function loadBookDetail() {
           ${book.reviewSummary ? `
             <div class="detail-section">
               <div class="detail-section-title">AI 리뷰 요약</div>
-              <div class="detail-review-summary">${escapeHtml(book.reviewSummary)}</div>
+              <div class="detail-review-summary">${escapeHtml(book.reviewSummary.trim())}</div>
             </div>` : ''}
         </div>
       </div>

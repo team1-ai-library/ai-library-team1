@@ -40,7 +40,7 @@ public class TelegramBookSearchUseCase {
 
         // 1. 하이브리드 검색 수행 (100개 추출)
         List<BookSearchResponse> candidates = hybridSearchUseCase
-                .searchByHybrid(info.text(), PageRequest.of(0, RETRIEVAL_K))
+                .searchByHybridForRag(info.text(), PageRequest.of(0, RETRIEVAL_K))
                 .getContent();
 
         if (candidates.isEmpty()) {
