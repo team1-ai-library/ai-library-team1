@@ -20,9 +20,9 @@ public class ReviewAiSummaryService {
     }
 
     @Transactional
-    public BookReviewAiSummary startGenerating(BookReviewAiSummary summary) {
+    public void startGenerating(BookReviewAiSummary summary) {
         summary.startGenerating();
-        return reviewAiSummaryRepository.save(summary);
+        reviewAiSummaryRepository.save(summary);
     }
 
     @Transactional
@@ -34,6 +34,5 @@ public class ReviewAiSummaryService {
     @Transactional
     public void complete(BookReviewAiSummary summary) {
         reviewAiSummaryRepository.save(summary);
-
     }
 }
