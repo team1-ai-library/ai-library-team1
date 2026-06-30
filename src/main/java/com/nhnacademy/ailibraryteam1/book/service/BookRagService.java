@@ -73,11 +73,11 @@ public class BookRagService {
         List<BookSearchResponse> topKBooks = this.selectTopKBooks(books);
         log.info("[BookRagService] Top-K 선정 완료 - {}권 -> {}권", books.size(), topKBooks.size());
 
-        return recommendBooksWithCandidates(question, model, topKBooks);
+        return recommendBooksWithCandidates(question, model, topKBooks, conversationId);
     }
 
     // 리랭킹된 도서 목록을 외부에서 주입받기 위해 메서드 분리
-    public List<BookAiRecommendationResponse> recommendBooksWithCandidates(String question, String model, List<BookSearchResponse> topKBooks) {
+    public List<BookAiRecommendationResponse> recommendBooksWithCandidates(String question, String model, List<BookSearchResponse> topKBooks, String conversationId) {
 
         if (topKBooks.isEmpty()) {
             log.warn("[BookRagService] 추천 대상 도서가 없습니다 - 질문: {}", question);

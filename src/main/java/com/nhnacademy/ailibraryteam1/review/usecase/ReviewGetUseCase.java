@@ -28,8 +28,7 @@ public class ReviewGetUseCase {
     public ReviewDetailResponse execute(long bookId) {
 
         // 리뷰 통계 조회 (리뷰가 없으면 널)
-        BookReviewStatistic reviewStatistic = this.reviewStatisticService.findStatistic(bookId)
-                .orElse(null);
+        BookReviewStatistic reviewStatistic = this.reviewStatisticService.getStatistic(bookId);
 
         // 리뷰 목록 조회 및 ReviewResponse DTO로 변환
         List<ReviewResponse> reviews = this.reviewService.getAllBookReviews(bookId)
