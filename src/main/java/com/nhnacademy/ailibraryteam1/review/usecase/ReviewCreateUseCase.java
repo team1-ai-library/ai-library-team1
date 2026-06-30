@@ -6,7 +6,7 @@ import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.review.dto.ReviewCreateRequest;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewStatistic;
-import com.nhnacademy.ailibraryteam1.review.event.ReviewCreatedEvent;
+import com.nhnacademy.ailibraryteam1.rabbitmq.event.ReviewCreatedEvent;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewService;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewStatisticService;
 import lombok.RequiredArgsConstructor;

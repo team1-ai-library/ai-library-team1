@@ -5,7 +5,7 @@ import com.nhnacademy.ailibraryteam1.book.service.BookService;
 import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReview;
 import com.nhnacademy.ailibraryteam1.review.entity.BookReviewAiSummary;
-import com.nhnacademy.ailibraryteam1.review.event.ReviewEmbeddingEvent;
+import com.nhnacademy.ailibraryteam1.rabbitmq.event.ReviewEmbeddingEvent;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewAiSummaryService;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewService;
 import com.nhnacademy.ailibraryteam1.review.service.ReviewSummarizer;
