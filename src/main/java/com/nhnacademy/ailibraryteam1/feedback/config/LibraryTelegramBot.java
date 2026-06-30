@@ -137,7 +137,8 @@ public class LibraryTelegramBot extends TelegramLongPollingBot {
         List<BotCommand> commands = List.of(
                 new BotCommand("start", "봇 시작 및 환영 메시지"),
                 new BotCommand("help", "사용 방법 안내"),
-                new BotCommand("search", "도서 RAG 추천 검색 (예: /search 자바)")
+                new BotCommand("search", "도서 RAG 추천 검색 (예: /search 자바)"),
+                new BotCommand("library", "도서나루 API 호출")
         );
 
         try {
