@@ -23,6 +23,7 @@ public class ReviewService {
         return reviewRepository.findAllByBook_Id(bookId);
     }
 
+    @Transactional(readOnly = true)
     public List<BookReview> getCursorNextReviews(long bookId, long cursorId) {
         return reviewRepository.findAllByBook_IdAndIdGreaterThan(bookId, cursorId);
     }
