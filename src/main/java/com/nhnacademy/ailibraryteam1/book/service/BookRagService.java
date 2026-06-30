@@ -8,7 +8,6 @@ import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import com.nhnacademy.ailibraryteam1.common.util.PromptTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -33,14 +32,17 @@ public class BookRagService {
     private final BookHybridSearchUseCase hybridSearchUseCase;
     private final ChatClient geminiChatClient;
     private final ChatClient ollamaChatClient;
+    private final ChatClient localChatClient;
 
     public BookRagService(BookHybridSearchUseCase hybridSearchUseCase,
                           @Qualifier("geminiChatClient") ChatClient geminiChatClient,
-                          @Qualifier("ollamaChatClient") ChatClient ollamaChatClient) {
+                          @Qualifier("ollamaChatClient") ChatClient ollamaChatClient,
+                          @Qualifier("localChatClient") ChatClient localChatClient) {
 
         this.hybridSearchUseCase = hybridSearchUseCase;
         this.geminiChatClient = geminiChatClient;
         this.ollamaChatClient = ollamaChatClient;
+        this.localChatClient = localChatClient;
     }
 
     private ChatClient selectClient(String model) {
@@ -48,6 +50,7 @@ public class BookRagService {
         return switch (model.toLowerCase()) {
             case "gemini" -> this.geminiChatClient;
             case "ollama" -> this.ollamaChatClient;
+            case "local" -> this.localChatClient;
             default -> throw new BusinessException(ErrorCode.UNSUPPORTED_MODEL);
         };
     }

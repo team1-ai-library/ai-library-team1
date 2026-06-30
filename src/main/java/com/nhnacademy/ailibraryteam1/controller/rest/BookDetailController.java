@@ -1,7 +1,7 @@
 package com.nhnacademy.ailibraryteam1.controller.rest;
 
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
-import com.nhnacademy.ailibraryteam1.book.service.BookService;
+import com.nhnacademy.ailibraryteam1.book.usecase.BookDetailUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BookDetailController {
 
-    private final BookService bookService;
+    private final BookDetailUseCase bookDetailUseCase;
 
     @GetMapping("/api/books/{id}")
     public ResponseEntity<BookSearchResponse> bookDetail(@PathVariable Long id) {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.bookService.getBookDetail(id));
+                .body(this.bookDetailUseCase.getBookDetail(id));
     }
 }

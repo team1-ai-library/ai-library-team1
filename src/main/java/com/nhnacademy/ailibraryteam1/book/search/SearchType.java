@@ -10,8 +10,7 @@ import java.util.Arrays;
 public enum SearchType {
     KEYWORD,
     VECTOR,
-    HYBRID,
-    RAG;
+    HYBRID;
 
     public static SearchType from(String value) {
         return Arrays.stream(SearchType.values())
