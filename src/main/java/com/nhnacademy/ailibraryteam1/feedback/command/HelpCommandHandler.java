@@ -20,9 +20,10 @@ public class HelpCommandHandler implements TelegramCommandHandler {
         String helpText = """
             명령어 가이드
             
-            '/start' : 봇 시작 및 소개
-            '/help' : 도움말 확인
-            '/search [검색어]' : 도서 추천 검색
+            /start : 봇 시작 및 소개
+            /help : 도움말 확인
+            /search [검색어] : 도서 추천 검색
+            /library [검색어]: 도서나루 챗봇 (도서 검색, 도서 대출 여부...)
             """;
 
         return List.of(SendMessage.builder()
