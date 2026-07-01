@@ -41,7 +41,7 @@ public class Feedback {
     }
 
     public static Feedback create(long chatId, long bookId, String query, FeedbackType type) {
-        return new Feedback(null, chatId, bookId, query, type, null);
+        return new Feedback(null, chatId, bookId, query, type, OffsetDateTime.now());
     }
 
     public double getFeedbackScore() {
