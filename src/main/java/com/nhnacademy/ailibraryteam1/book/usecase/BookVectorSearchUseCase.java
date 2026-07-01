@@ -3,6 +3,7 @@ package com.nhnacademy.ailibraryteam1.book.usecase;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
+import com.nhnacademy.ailibraryteam1.common.cache.CachedEmbeddingService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +20,14 @@ import java.util.Objects;
 public class BookVectorSearchUseCase {
 
     private final BookQuerydslRepository bookQuerydslRepository;
-    private final EmbeddingModel embeddingModel;
+    private final CachedEmbeddingService cachedEmbeddingService;
 
     public BookVectorSearchUseCase(BookQuerydslRepository bookQuerydslRepository,
-                                   @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel) {
+                                   CachedEmbeddingService cachedEmbeddingService
+                                   ) {
 
         this.bookQuerydslRepository = bookQuerydslRepository;
-        this.embeddingModel = embeddingModel;
+        this.cachedEmbeddingService = cachedEmbeddingService;
     }
 
     // 벡터 검색
@@ -39,7 +41,7 @@ public class BookVectorSearchUseCase {
         }
 
         // 검색어를 벡터로 변환
-        float[] queryVector = this.embeddingModel.embed(keyword);
+        float[] queryVector = this.cachedEmbeddingService.embed(keyword);
 
         Page<BookSearchResponse> result = this.bookQuerydslRepository.searchByVector(queryVector, pageable);
 

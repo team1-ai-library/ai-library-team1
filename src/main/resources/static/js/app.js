@@ -196,7 +196,8 @@ async function doChat() {
     messages.scrollTop = messages.scrollHeight;
 
     try {
-        const res = await fetch(`/api/chat?question=${encodeURIComponent(question)}&model=ollama`);
+        const model = document.getElementById('chat-model-select').value;
+        const res = await fetch(`/api/chat?question=${encodeURIComponent(question)}&model=${model}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const text = await res.text();
 

@@ -98,7 +98,7 @@ class McpToolCallIntegrationTest {
     void shouldCallMcpToolViaChatClient() {
         log.info("========== [TEST 3] ChatClient + MCP Tool 통합 호출 ==========");
 
-        String userMessage = "뉴욕시에서 소년이 운다 책 찾을 수 있는 도서관 알려줘";
+        String userMessage = "광주에서 소년이 운다 책 찾을 수 있는 도서관 알려줘";
         log.info("● 사용자 질문: {}", userMessage);
 
         String response = ollamaChatClient.prompt()

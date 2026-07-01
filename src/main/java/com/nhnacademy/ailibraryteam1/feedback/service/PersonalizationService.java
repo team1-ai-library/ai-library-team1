@@ -2,6 +2,7 @@ package com.nhnacademy.ailibraryteam1.feedback.service;
 
 import com.nhnacademy.ailibraryteam1.book.entity.BookEmbedding;
 import com.nhnacademy.ailibraryteam1.book.repository.BookEmbeddingRepository;
+import com.nhnacademy.ailibraryteam1.common.util.CalculateCosineSimilarity;
 import com.nhnacademy.ailibraryteam1.feedback.entity.Feedback;
 import com.nhnacademy.ailibraryteam1.feedback.entity.FeedbackType;
 import com.nhnacademy.ailibraryteam1.feedback.repository.FeedbackRepository;
@@ -49,7 +50,7 @@ public class PersonalizationService {
             long bookId = embedding.getBookId();
 
             if (scoreMap.containsKey(bookId)) {
-                double similarity = cosineSimilarity(userPreferenceVector, embedding.getEmbedding());
+                double similarity = CalculateCosineSimilarity.cosineSimilarity(userPreferenceVector, embedding.getEmbedding());
 
                 scoreMap.put(bookId, similarity);
             }
@@ -102,27 +103,5 @@ public class PersonalizationService {
         }
 
         return avgVector;
-    }
-
-    private double cosineSimilarity(float[] vectorA, float[] vectorB) {
-        if (vectorA == null || vectorB == null || vectorA.length != vectorB.length) {
-            return 0.0;
-        }
-
-        double dotProduct = 0.0;
-        double normA = 0.0;
-        double normB = 0.0;
-
-        for (int i = 0; i < vectorA.length; i++) {
-            dotProduct += vectorA[i] * vectorB[i];
-            normA += vectorA[i] * vectorA[i];
-            normB += vectorB[i] * vectorB[i];
-        }
-
-        if (normA == 0.0 || normB == 0.0) {
-            return 0.0;
-        }
-
-        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
     }
 }

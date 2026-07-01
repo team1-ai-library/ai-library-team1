@@ -73,7 +73,10 @@ public class ChatClientConfig {
                 .build();
 
         return ChatClient.builder(chatModel)
-                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .defaultToolCallbacks(mcpTools)
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 }
