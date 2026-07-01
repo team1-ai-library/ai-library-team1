@@ -9,6 +9,7 @@ import com.nhnacademy.ailibraryteam1.common.util.PromptTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -29,16 +31,22 @@ public class BookRagService {
     private static final double RRF_THRESHOLD = 0.02;
 
     private final BookHybridSearchUseCase hybridSearchUseCase;
+    private final SemanticCacheService semanticCacheService;
+    private final EmbeddingModel embeddingModel;
     private final ChatClient geminiChatClient;
     private final ChatClient ollamaChatClient;
     private final ChatClient localChatClient;
 
     public BookRagService(BookHybridSearchUseCase hybridSearchUseCase,
+                          SemanticCacheService semanticCacheService,
+                          @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel,
                           @Qualifier("geminiChatClient") ChatClient geminiChatClient,
                           @Qualifier("ollamaChatClient") ChatClient ollamaChatClient,
                           @Qualifier("localChatClient") ChatClient localChatClient) {
 
         this.hybridSearchUseCase = hybridSearchUseCase;
+        this.semanticCacheService = semanticCacheService;
+        this.embeddingModel = embeddingModel;
         this.geminiChatClient = geminiChatClient;
         this.ollamaChatClient = ollamaChatClient;
         this.localChatClient = localChatClient;
@@ -58,6 +66,16 @@ public class BookRagService {
 
         log.info("[BookRagService] RAG 추천 시작 - 질문: {}, 모델: {}", question, model);
 
+        // 질문 임베딩
+        float[] questionEmbedding = this.embeddingModel.embed(question);
+
+        Optional<List<BookAiRecommendationResponse>> cachedResult = this.semanticCacheService.get(questionEmbedding);
+        if (cachedResult.isPresent()) {
+            log.info("[BookRagService] 캐시 히트 - 질문: {}", question);
+            return cachedResult.get();
+        }
+
+        // 하이브리드 검색
         // RETRIEVAL_K개 요청 -> 내부에서 이미 RRF 정렬된 상태로 옴
         Pageable pageable = PageRequest.of(0, RETRIEVAL_K);
         List<BookSearchResponse> books = hybridSearchUseCase
@@ -75,7 +93,10 @@ public class BookRagService {
         List<BookSearchResponse> topKBooks = this.selectTopKBooks(books);
         log.info("[BookRagService] Top-K 선정 완료 - {}권 -> {}권", books.size(), topKBooks.size());
 
-        return recommendBooksWithCandidates(question, model, topKBooks, conversationId);
+        List<BookAiRecommendationResponse> result = this.recommendBooksWithCandidates(question, model, topKBooks, conversationId);
+
+        // 결과 캐시에 저장
+        if()
     }
 
     // 리랭킹된 도서 목록을 외부에서 주입받기 위해 메서드 분리
@@ -110,8 +131,8 @@ public class BookRagService {
             // relevance 내림차순 정렬
             return Objects.nonNull(result)
                     ? result.stream()
-                      .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
-                      .toList()
+                    .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
+                    .toList()
                     : List.of();
         } catch (Exception e) {
             log.error("[BookRagService] AI 모델 호출 실패 - 모델: {}, 질문: {}, 원인: {}",

@@ -16,7 +16,7 @@ public class CacheConfig {
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-
+        cacheManager.setAllowNullValues(false); // null 값 캐시 안함, 검색결과가 없는 것은 cache 할 필요가 없음
         // 텔레그램 최근 검색어 세션 캐시
         cacheManager.registerCustomCache("recentQueries",
                 Caffeine.newBuilder()
@@ -30,6 +30,41 @@ public class CacheConfig {
                         .expireAfterWrite(24, TimeUnit.HOURS)
                         .maximumSize(1000)
                         .build());
+
+        cacheManager.registerCustomCache("embeddings",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(24, TimeUnit.HOURS)
+                        .maximumSize(5000)
+                        .build()
+        );
+
+        cacheManager.registerCustomCache("keywordSearch",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(15, TimeUnit.MINUTES)
+                        .maximumSize(2000)
+                        .build()
+        );
+
+        cacheManager.registerCustomCache("vectorSearch",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(30, TimeUnit.MINUTES)
+                        .maximumSize(2000)
+                        .build()
+        );
+
+        cacheManager.registerCustomCache("hybridSearch",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(15, TimeUnit.MINUTES)
+                        .maximumSize(2000)
+                        .build()
+        );
+
+        cacheManager.registerCustomCache("ragSearch",
+                Caffeine.newBuilder()
+                        .expireAfterWrite(2, TimeUnit.HOURS)
+                        .maximumSize(3000)
+                        .build()
+        );
 
         return cacheManager;
     }

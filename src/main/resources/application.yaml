@@ -71,7 +71,7 @@ spring:
           connections:
             data4library:
               url: http://localhost:8081/sse
-        initialized: true
+        initialized: false
 
 local-ai:
   base-url: ${local-ai-base-url}
