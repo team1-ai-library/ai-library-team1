@@ -129,6 +129,7 @@ public class BookQuerydslRepository {
                 .join(bookEmbedding).on(book.id.eq(bookEmbedding.bookId))
                 .leftJoin(reviewStatistic).on(book.id.eq(reviewStatistic.bookId))
                 .leftJoin(reviewAiSummary).on(book.id.eq(reviewAiSummary.bookId))
+                .where(similarity.gt(0.55))
                 .orderBy(similarity.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

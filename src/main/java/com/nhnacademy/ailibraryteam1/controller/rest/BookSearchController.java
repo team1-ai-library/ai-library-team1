@@ -3,7 +3,6 @@ package com.nhnacademy.ailibraryteam1.controller.rest;
 import com.nhnacademy.ailibraryteam1.book.dto.BookRecommendationResult;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.search.SearchType;
-import com.nhnacademy.ailibraryteam1.book.service.BookRagService;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookHybridSearchUseCase;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookKeywordSearchUseCase;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookRecommendWithDetailUseCase;
@@ -30,7 +29,7 @@ public class BookSearchController {
     private final BookHybridSearchUseCase bookHybridSearchUseCase;
     private final BookRecommendWithDetailUseCase bookRecommendWithDetailUseCase;
 
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity<Page<BookSearchResponse>> search(
             @RequestParam(required = false) String isbn,
             @RequestParam(required = false) String keyword,
