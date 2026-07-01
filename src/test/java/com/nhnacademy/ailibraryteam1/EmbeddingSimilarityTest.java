@@ -15,8 +15,8 @@ class EmbeddingSimilarityTest {
 
     @Test
     void compareTwoWords() {
-        float[] vec1 = embeddingModel.embed("커피");
-        float[] vec2 = embeddingModel.embed("자바");
+        float[] vec1 = embeddingModel.embed("광주에서 토비의 스프링 빌릴 수 있는 도서관 알려줄 수 있을까?");
+        float[] vec2 = embeddingModel.embed("광주에서 토비의 스프링 대여할 수 있는 도서관 알려줘");
 
         double similarity = cosineSimilarity(vec1, vec2);
         System.out.println(" 유사도: " + similarity);

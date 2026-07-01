@@ -4,6 +4,7 @@ import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.repository.BookQuerydslRepository;
 import com.nhnacademy.ailibraryteam1.book.service.RrfService;
 import com.nhnacademy.ailibraryteam1.common.annotation.UseCase;
+import com.nhnacademy.ailibraryteam1.common.cache.CachedEmbeddingService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -35,17 +36,17 @@ public class BookHybridSearchUseCase {
     private final BookQuerydslRepository bookQuerydslRepository;
     private final RrfService rrfService;
     private final Executor hybridSearchExecutor;
-    private final EmbeddingModel embeddingModel;
+    private final CachedEmbeddingService cachedEmbeddingService;
 
     public BookHybridSearchUseCase(BookQuerydslRepository bookQuerydslRepository,
                                    RrfService rrfService,
                                    Executor hybridSearchExecutor,
-                                   @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel) {
+                                   CachedEmbeddingService cachedEmbeddingService) {
 
         this.bookQuerydslRepository = bookQuerydslRepository;
         this.rrfService = rrfService;
         this.hybridSearchExecutor = hybridSearchExecutor;
-        this.embeddingModel = embeddingModel;
+        this.cachedEmbeddingService = cachedEmbeddingService;
     }
 
     // 일반 하이브리드 검색 (키워드 : 벡터 = 1 : 1)
@@ -109,7 +110,7 @@ public class BookHybridSearchUseCase {
 
         // 벡터 검색 (질문 임베딩 모델로 변환 후 코사인 유사도 검색)
         CompletableFuture<List<BookSearchResponse>> vectorSearchFuture = CompletableFuture.supplyAsync(() -> {
-            float[] queryVector = this.embeddingModel.embed(keyword); // 검색어를 벡터로 변환
+            float[] queryVector = this.cachedEmbeddingService.embed(keyword); // 검색어를 벡터로 변환
 
             Page<BookSearchResponse> vectorPage = this.bookQuerydslRepository.searchByVector(queryVector, largePage); // 검색은 largePage로
 

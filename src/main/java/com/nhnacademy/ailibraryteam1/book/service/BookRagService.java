@@ -3,13 +3,14 @@ package com.nhnacademy.ailibraryteam1.book.service;
 import com.nhnacademy.ailibraryteam1.book.dto.BookAiRecommendationResponse;
 import com.nhnacademy.ailibraryteam1.book.dto.BookSearchResponse;
 import com.nhnacademy.ailibraryteam1.book.usecase.BookHybridSearchUseCase;
+import com.nhnacademy.ailibraryteam1.common.cache.CachedEmbeddingService;
+import com.nhnacademy.ailibraryteam1.common.cache.SemanticCacheService;
 import com.nhnacademy.ailibraryteam1.common.exception.BusinessException;
 import com.nhnacademy.ailibraryteam1.common.exception.ErrorCode;
 import com.nhnacademy.ailibraryteam1.common.util.PromptTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -32,21 +33,21 @@ public class BookRagService {
 
     private final BookHybridSearchUseCase hybridSearchUseCase;
     private final SemanticCacheService semanticCacheService;
-    private final EmbeddingModel embeddingModel;
+    private final CachedEmbeddingService cachedEmbeddingService;
     private final ChatClient geminiChatClient;
     private final ChatClient ollamaChatClient;
     private final ChatClient localChatClient;
 
     public BookRagService(BookHybridSearchUseCase hybridSearchUseCase,
                           SemanticCacheService semanticCacheService,
-                          @Qualifier("openAiEmbeddingModel") EmbeddingModel embeddingModel,
+                          CachedEmbeddingService cachedEmbeddingService,
                           @Qualifier("geminiChatClient") ChatClient geminiChatClient,
                           @Qualifier("ollamaChatClient") ChatClient ollamaChatClient,
                           @Qualifier("localChatClient") ChatClient localChatClient) {
 
         this.hybridSearchUseCase = hybridSearchUseCase;
         this.semanticCacheService = semanticCacheService;
-        this.embeddingModel = embeddingModel;
+        this.cachedEmbeddingService = cachedEmbeddingService;
         this.geminiChatClient = geminiChatClient;
         this.ollamaChatClient = ollamaChatClient;
         this.localChatClient = localChatClient;
@@ -67,7 +68,7 @@ public class BookRagService {
         log.info("[BookRagService] RAG 추천 시작 - 질문: {}, 모델: {}", question, model);
 
         // 질문 임베딩
-        float[] questionEmbedding = this.embeddingModel.embed(question);
+        float[] questionEmbedding = this.cachedEmbeddingService.embed(question);
 
         Optional<List<BookAiRecommendationResponse>> cachedResult = this.semanticCacheService.get(questionEmbedding);
         if (cachedResult.isPresent()) {
@@ -96,7 +97,11 @@ public class BookRagService {
         List<BookAiRecommendationResponse> result = this.recommendBooksWithCandidates(question, model, topKBooks, conversationId);
 
         // 결과 캐시에 저장
-        if()
+        if (!result.isEmpty()) {
+            this.semanticCacheService.putToCache(question, questionEmbedding, result);
+        }
+
+        return result;
     }
 
     // 리랭킹된 도서 목록을 외부에서 주입받기 위해 메서드 분리
@@ -131,8 +136,8 @@ public class BookRagService {
             // relevance 내림차순 정렬
             return Objects.nonNull(result)
                     ? result.stream()
-                    .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
-                    .toList()
+                      .sorted(Comparator.comparingInt(BookAiRecommendationResponse::relevance).reversed())
+                      .toList()
                     : List.of();
         } catch (Exception e) {
             log.error("[BookRagService] AI 모델 호출 실패 - 모델: {}, 질문: {}, 원인: {}",

@@ -1,5 +1,6 @@
 package com.nhnacademy.ailibraryteam1.book.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -9,5 +10,6 @@ import java.util.List;
 public record SemanticCacheEntry(
         String query, // 원본 질문 (로깅용)
         float[] embedding, // 질문 임베딩 벡터 (유사도 비교용)
-        List<BookAiRecommendationResponse> result
+        List<BookAiRecommendationResponse> result,
+        LocalDateTime createdAt // 생성 시각(TTL 판단용)
 ) {}

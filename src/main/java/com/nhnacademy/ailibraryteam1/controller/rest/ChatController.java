@@ -17,12 +17,15 @@ public class ChatController {
 
     private final ChatClient geminiChatClient;
     private final ChatClient ollamaChatClient;
+    private final ChatClient localChatClient;
 
     public ChatController(@Qualifier("geminiChatClient") ChatClient geminiChatClient,
-                          @Qualifier("ollamaChatClient") ChatClient ollamaChatClient) {
+                          @Qualifier("ollamaChatClient") ChatClient ollamaChatClient,
+                          @Qualifier("localChatClient") ChatClient localChatClient) {
 
         this.geminiChatClient = geminiChatClient;
         this.ollamaChatClient = ollamaChatClient;
+        this.localChatClient = localChatClient;
     }
 
     @GetMapping("/api/chat")
@@ -36,6 +39,8 @@ public class ChatController {
         ChatClient chatClient;
         if (model.equalsIgnoreCase("gemini")) {
             chatClient = this.geminiChatClient;
+        } else if (model.equalsIgnoreCase("local")) {
+            chatClient = this.localChatClient;
         } else {
             chatClient = this.ollamaChatClient;
         }

@@ -77,6 +77,14 @@
             </div>
         </div>
         <div class="chat-hint">예: "광주에서 토비의 스프링 빌릴 수 있어?" / "이번 주 급상승 도서 알려줘"</div>
+        <div class="chat-model-row">
+            <span class="model-label">모델</span>
+            <select id="chat-model-select">
+                <option value="ollama">Ollama</option>
+                <option value="local">로컬 모델</option>
+                <option value="gemini">Gemini</option>
+            </select>
+        </div>
         <div class="chat-input-row">
             <input type="text" id="chat-input" placeholder="질문을 입력하세요">
             <button id="chat-send" onclick="doChat()">
