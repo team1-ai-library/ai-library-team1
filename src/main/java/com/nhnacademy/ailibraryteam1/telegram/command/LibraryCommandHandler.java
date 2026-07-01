@@ -1,5 +1,6 @@
 package com.nhnacademy.ailibraryteam1.telegram.command;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class LibraryCommandHandler implements TelegramCommandHandler {
     private final ChatClient chatClient;
@@ -36,6 +38,8 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
                     .build());
         }
 
+        log.info("[텔레그램 도서나루 챗봇 호출]: {}", argument);
+
         String apiResponse = chatClient.prompt()
                 .user(argument)
                 .advisors(advisorSpec -> advisorSpec.param(
@@ -43,6 +47,8 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
                 ))
                 .call()
                 .content();
+
+        log.info("[텔레그램 도서나루 챗봇 응답]: {}", apiResponse);
         
         if (apiResponse == null || apiResponse.isBlank()) {
             return List.of(SendMessage.builder()
