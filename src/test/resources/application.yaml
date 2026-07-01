@@ -1,0 +1,35 @@
+spring:
+  # @ServiceConnection이 datasource 자동 주입
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  rabbitmq:
+    host: localhost
+
+  ai:
+    openai:
+      api-key: test-key
+    google:
+      genai:
+        api-key: test-key
+    ollama:
+      base-url: http://localhost:11434
+    mcp:
+      client:
+        enabled: false
+        initialized: false
+
+local-ai:
+  base-url: http://localhost:8080
+  model: test-model
+
+telegram:
+  bot:
+    token: test-token
+    enabled: false
+    username: test-username
+
+init:
+  enable: false
