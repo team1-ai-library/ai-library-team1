@@ -41,27 +41,6 @@ public class CacheConfig {
                         .build()
         );
 
-        cacheManager.registerCustomCache("keywordSearch",
-                Caffeine.newBuilder()
-                        .expireAfterWrite(15, TimeUnit.MINUTES)
-                        .maximumSize(2000)
-                        .build()
-        );
-
-        cacheManager.registerCustomCache("vectorSearch",
-                Caffeine.newBuilder()
-                        .expireAfterWrite(30, TimeUnit.MINUTES)
-                        .maximumSize(2000)
-                        .build()
-        );
-
-        cacheManager.registerCustomCache("hybridSearch",
-                Caffeine.newBuilder()
-                        .expireAfterWrite(15, TimeUnit.MINUTES)
-                        .maximumSize(2000)
-                        .build()
-        );
-
         return cacheManager;
     }
 }
