@@ -72,6 +72,7 @@ spring:
             data4library:
               url: http://localhost:8081/sse
         initialized: false
+        request-timeout: 60s
 
 local-ai:
   base-url: ${local-ai-base-url}
