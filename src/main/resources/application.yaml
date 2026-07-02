@@ -71,7 +71,7 @@ spring:
           connections:
             data4library:
               url: http://localhost:8081/sse
-        initialized: false
+        initialized: true
         request-timeout: 60s
 
 local-ai:
