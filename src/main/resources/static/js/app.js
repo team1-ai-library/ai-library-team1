@@ -16,13 +16,30 @@ document.querySelectorAll('input[name=search-type]').forEach(r => {
     });
 });
 
-// ── Enter 키 처리 ──
-document.getElementById('search-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doSearch(0);
+// ── Enter 키 처리 (한글 조합 중 중복 전송 방지) ──
+let isSearchComposing = false;
+let isChatComposing = false;
+
+const searchInput = document.getElementById('search-input');
+searchInput.addEventListener('compositionstart', () => {
+    isSearchComposing = true;
+});
+searchInput.addEventListener('compositionend', () => {
+    isSearchComposing = false;
+});
+searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !isSearchComposing) doSearch(0);
 });
 
-document.getElementById('chat-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doChat();
+const chatInput = document.getElementById('chat-input');
+chatInput.addEventListener('compositionstart', () => {
+    isChatComposing = true;
+});
+chatInput.addEventListener('compositionend', () => {
+    isChatComposing = false;
+});
+chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !isChatComposing) doChat();
 });
 
 // ── 현재 검색 상태 저장 (페이징용) ──
@@ -195,34 +212,62 @@ async function doChat() {
 
     messages.scrollTop = messages.scrollHeight;
 
-    try {
-        const model = document.getElementById('chat-model-select').value;
-        const res = await fetch(`/api/chat?question=${encodeURIComponent(question)}&model=${model}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
+    const model = document.getElementById('chat-model-select').value;
+    const url = `/api/chat?question=${encodeURIComponent(question)}&model=${model}`;
+    const eventSource = new EventSource(url);
 
-        document.getElementById(typingId)?.remove();
+    let fullText = '';
+    let botBubble = null;
+    let firstChunkReceived = false;
 
-        messages.innerHTML += `
-      <div class="msg bot">
-        <div class="msg-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
-        <div class="msg-bubble">${escapeHtml(text)}</div>
-      </div>`;
-    } catch (e) {
-        document.getElementById(typingId)?.remove();
+    eventSource.onmessage = (event) => {
+        if (event.data === '[DONE]') {
+            eventSource.close();
+            sendBtn.disabled = false;
+            return;
+        }
 
-        messages.innerHTML += `
-      <div class="msg bot">
-        <div class="msg-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
-        <div class="msg-bubble" style="color:#a32d2d;">오류가 발생했습니다: ${escapeHtml(e.message)}</div>
-      </div>`;
-    } finally {
-        sendBtn.disabled = false;
+        let chunkText;
+        try {
+            chunkText = JSON.parse(event.data).content;
+        } catch (e) {
+            chunkText = ''; // 파싱 실패 시 무시
+        }
+
+        if (!firstChunkReceived) {
+            document.getElementById(typingId)?.remove();
+            const botMsgId = 'bot-' + Date.now();
+            messages.innerHTML += `
+        <div class="msg bot" id="${botMsgId}">
+          <div class="msg-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
+          <div class="msg-bubble" id="bubble-${botMsgId}"></div>
+        </div>`;
+            botBubble = document.getElementById(`bubble-${botMsgId}`);
+            firstChunkReceived = true;
+        }
+
+        fullText += chunkText;
+        botBubble.innerHTML = escapeHtml(fullText);
         messages.scrollTop = messages.scrollHeight;
-    }
+    };
+
+    eventSource.onerror = () => {
+        eventSource.close();
+        sendBtn.disabled = false;
+
+        if (!firstChunkReceived) {
+            document.getElementById(typingId)?.remove();
+            messages.innerHTML += `
+            <div class="msg bot">
+              <div class="msg-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
+              <div class="msg-bubble" style="color:#a32d2d;">오류가 발생했습니다.</div>
+            </div>`;
+            messages.scrollTop = messages.scrollHeight;
+        }
+    };
 }
 
-// ── 유틸 ──
+// ── 유틸 ── (전역 스코프로 분리)
 function escapeHtml(str) {
     return String(str)
         .replace(/&/g, '&amp;')
