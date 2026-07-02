@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 아키텍처</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">System Architecture</div>
+    <h2>3개 프로젝트 연계 구조</h2>
+
+    <div class="diagram">
+        <div class="node accent">
+            <div class="node-title"><i class="ti ti-world"></i> ai-library-team1</div>
+            <div class="node-desc">
+                사용자용 웹 서비스 (Spring Boot + Thymeleaf).<br>
+                도서 검색(키워드/벡터/하이브리드/RAG), 도서관 챗봇, 리뷰를 제공.
+            </div>
+        </div>
+
+        <div class="arrow-col">
+            <span class="arrow">⇄</span>
+            <span>검색 · RAG 질의</span>
+        </div>
+
+        <div class="node">
+            <div class="node-title"><i class="ti ti-vector-triangle"></i> book_embeddings</div>
+            <div class="node-desc">
+                도서 임베딩 배치 서버.<br>
+                리뷰를 RabbitMQ로 수신해 벡터를 생성/저장하고 스케줄러로 정기 배치 처리.
+            </div>
+        </div>
+    </div>
+
+    <div class="diagram" style="margin-top: 0.5rem;">
+        <div class="node accent" style="visibility:hidden;"></div>
+        <div class="arrow-col">
+            <span class="arrow">⇅</span>
+            <span>MCP 도구 호출</span>
+        </div>
+        <div class="node">
+            <div class="node-title"><i class="ti ti-plug-connected"></i> ai-library-mcp-server</div>
+            <div class="node-desc">
+                정보나루(국립중앙도서관) Open API를 MCP 도구로 노출.<br>
+                실시간 도서 정보, 인기 대출 도서, 도서관 소장/대출 가능 여부 등을 AI에게 제공.
+            </div>
+        </div>
+    </div>
+
+    <p class="subtitle" style="margin-top:1.5rem;">
+        사용자가 챗봇에 질문하면, team1의 AI 에이전트가 book_embeddings의 벡터 검색 결과와
+        mcp-server의 실시간 도서관 정보를 함께 활용해 답변을 생성합니다. 다음 장에서
+        하나의 질문이 실제로 어떤 순서로 처리되는지 자세히 보겠습니다.
+    </p>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide1.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot active" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide3.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

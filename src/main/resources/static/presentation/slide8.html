@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 검색 기능 2</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Core Feature · 검색 2 / 2</div>
+    <h2>검색 기능 ② — 하이브리드 · AI 추천(RAG)</h2>
+
+    <div class="feature-grid">
+        <div class="feature-card" style="width: 320px;">
+            <i class="ti ti-adjustments feature-icon"></i>
+            <div class="feature-title">하이브리드 검색</div>
+            <div class="feature-desc">
+                키워드 매칭 점수와 벡터 유사도 점수를 RRF(Reciprocal Rank Fusion)로 결합해 상위 100권 후보를 뽑습니다.<br>
+                정확도와 의미 검색을 절충한 방식입니다.
+            </div>
+        </div>
+        <div class="feature-card accent" style="width: 320px;">
+            <i class="ti ti-sparkles feature-icon"></i>
+            <div class="feature-title">AI 추천 (RAG)</div>
+            <div class="feature-desc">
+                하이브리드 후보 중 RRF 점수 0.02 이상만 남겨 상위 5권으로 재랭크합니다.<br>
+                5권을 컨텍스트로 LLM에 전달하면, 질문 맥락에 맞는 책과 추천 이유를 함께 생성합니다.
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-note-list">
+        <div class="feature-note"><i class="ti ti-list-numbers"></i> 후보 100권 → RRF ≥ 0.02 → 최종 5권</div>
+        <div class="feature-note"><i class="ti ti-bolt"></i> 동일 질문은 시맨틱 캐시로 즉시 응답</div>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide7.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot active" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide9.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

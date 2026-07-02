@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 검색 기능 1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Core Feature · 검색 1 / 2</div>
+    <h2>검색 기능 ① — 키워드 · 벡터</h2>
+
+    <div class="feature-grid">
+        <div class="feature-card" style="width: 320px;">
+            <i class="ti ti-abc feature-icon"></i>
+            <div class="feature-title">키워드 검색</div>
+            <div class="feature-desc">
+                제목·저자·ISBN 등 텍스트를 그대로 매칭합니다.<br>
+                15만 건 도서 DB를 페이징으로 조회하며, 정확한 단어를 알고 있을 때 가장 빠르고 정확합니다.
+            </div>
+        </div>
+        <div class="feature-card" style="width: 320px;">
+            <i class="ti ti-vector-triangle feature-icon"></i>
+            <div class="feature-title">벡터 검색</div>
+            <div class="feature-desc">
+                질문을 BGE-M3로 임베딩한 뒤 pgvector 코사인 유사도로 검색합니다.<br>
+                표현이 달라도 의미가 비슷하면 찾아내므로, 오타·동의어·모호한 질문에 강합니다.
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide6.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot active" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide8.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

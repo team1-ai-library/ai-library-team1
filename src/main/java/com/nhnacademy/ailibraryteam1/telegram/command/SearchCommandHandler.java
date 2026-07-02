@@ -1,5 +1,6 @@
 package com.nhnacademy.ailibraryteam1.telegram.command;
 
+import com.nhnacademy.ailibraryteam1.telegram.TelegramInteractionLog;
 import com.nhnacademy.ailibraryteam1.telegram.dto.TelegramBookSearchResult;
 import com.nhnacademy.ailibraryteam1.telegram.dto.TelegramMessageInfo;
 import com.nhnacademy.ailibraryteam1.telegram.usecase.TelegramBookSearchUseCase;
@@ -14,11 +15,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class SearchCommandHandler implements TelegramCommandHandler {
     private final TelegramBookSearchUseCase telegramBookSearchUseCase;
+    private final TelegramInteractionLog interactionLog;
 
     @Override
     public String getCommand() {
@@ -36,15 +39,21 @@ public class SearchCommandHandler implements TelegramCommandHandler {
                     .build());
         }
 
+        interactionLog.record(TelegramInteractionLog.Type.REQUEST, "/search " + argument);
+
         TelegramMessageInfo info = TelegramMessageInfo.from(update, argument);
         List<TelegramBookSearchResult> results = telegramBookSearchUseCase.search(info);
 
         if (results.isEmpty()) {
+            interactionLog.record(TelegramInteractionLog.Type.RESPONSE, "검색 결과가 없습니다.");
             return List.of(SendMessage.builder()
                     .chatId(chatId)
                     .text("검색 결과가 없습니다.")
                     .build());
         }
+
+        interactionLog.record(TelegramInteractionLog.Type.RESPONSE,
+                results.stream().map(TelegramBookSearchResult::title).collect(Collectors.joining(", ")));
 
         List<PartialBotApiMethod<?>> responses = new ArrayList<>();
 
