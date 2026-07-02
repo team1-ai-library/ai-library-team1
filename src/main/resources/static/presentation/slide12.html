@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 라이브 데모</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Live Demo</div>
+    <h2>실제 서비스 화면으로 시연</h2>
+
+    <div class="browser-frame">
+        <div class="browser-toolbar">
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
+            <span class="browser-url" id="demo-url">/</span>
+        </div>
+        <iframe id="demo-frame" src="/" title="AI 도서관 라이브 데모"></iframe>
+    </div>
+
+    <div class="demo-actions">
+        <button class="btn" id="reload-btn"><i class="ti ti-refresh"></i> 새로고침</button>
+        <a class="btn primary" href="/" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> 새 탭에서 열기</a>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide11.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot active" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide13.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+<script>
+    document.getElementById('reload-btn').addEventListener('click', () => {
+        const frame = document.getElementById('demo-frame');
+        frame.src = frame.src;
+    });
+</script>
+</body>
+</html>
