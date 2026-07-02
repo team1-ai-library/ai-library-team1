@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 텔레그램 챗봇</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Multi-channel</div>
+    <h2>텔레그램 챗봇 연동</h2>
+    <p class="subtitle">
+        웹과 같은 백엔드(도서 검색·RAG 추천·챗봇)를 그대로 재사용해<br>
+        텔레그램에서도 동일한 AI 도서관 경험을 제공합니다.
+    </p>
+
+    <div class="telegram-layout">
+        <div class="command-list">
+            <div class="command-card">
+                <div class="cmd">/start</div>
+                <div class="cmd-desc">봇 시작, 사용 안내 메시지 전송</div>
+            </div>
+            <div class="command-card">
+                <div class="cmd">/help</div>
+                <div class="cmd-desc">사용 가능한 명령어 안내</div>
+            </div>
+            <div class="command-card">
+                <div class="cmd">/search [키워드]</div>
+                <div class="cmd-desc">RAG 기반 도서 추천, 👍👎 피드백 버튼 제공</div>
+            </div>
+            <div class="command-card">
+                <div class="cmd">/library [질문] · 일반 텍스트</div>
+                <div class="cmd-desc">도서 검색·대출 현황·도서관 정보를 챗봇으로 응답</div>
+            </div>
+        </div>
+
+        <div class="qr-card">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://t.me/T1AILibBot" alt="텔레그램 봇 QR 코드">
+            <div class="qr-handle">@T1AILibBot</div>
+            <div class="qr-label">폰으로 스캔해서 바로 대화해보세요</div>
+            <a class="btn primary" href="https://t.me/T1AILibBot" target="_blank" rel="noopener">
+                <i class="ti ti-brand-telegram"></i> 텔레그램에서 열기
+            </a>
+        </div>
+
+        <div class="chat-feed" id="chat-feed">
+            <div class="chat-feed-title">실시간 호출 로그</div>
+            <div id="chat-feed-body">
+                <div class="chat-empty">아직 대화가 없습니다.<br>봇에 말을 걸면 여기에 표시됩니다.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="prereq-note">
+        <i class="ti ti-alert-triangle"></i>
+        실행 전 <code>telegram.bot.enabled=true</code> 및 <code>TELEGRAM_BOT_TOKEN</code> 설정이 필요합니다.
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide12.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot active" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide14.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+<script>
+    (function () {
+        const body = document.getElementById('chat-feed-body');
+        let renderedCount = 0;
+
+        async function poll() {
+            let entries;
+            try {
+                const res = await fetch('/api/telegram/recent');
+                if (!res.ok) return;
+                entries = await res.json();
+            } catch (err) {
+                return;
+            }
+
+            if (!entries || entries.length === 0 || entries.length === renderedCount) {
+                return;
+            }
+
+            body.innerHTML = '';
+            entries.forEach((entry) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble ' + (entry.type === 'REQUEST' ? 'request' : 'response');
+                bubble.textContent = entry.text;
+                bubble.title = '클릭하면 전체 내용을 볼 수 있습니다';
+                bubble.addEventListener('click', () => bubble.classList.toggle('expanded'));
+                body.appendChild(bubble);
+            });
+            body.scrollTop = body.scrollHeight;
+            renderedCount = entries.length;
+        }
+
+        poll();
+        setInterval(poll, 3000);
+    })();
+</script>
+</body>
+</html>

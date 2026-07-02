@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 리뷰 AI 요약</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Core Feature</div>
+    <h2>리뷰 AI 요약</h2>
+
+    <div class="flow-timeline">
+        <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+                <div class="flow-title">리뷰 5개 이상이면 요약 시작</div>
+                <div class="flow-desc">리뷰가 5개 미만이면 요약을 생성하지 않고, 이미 생성 중이면 중복 실행을 막습니다(낙관적 락).</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+                <div class="flow-title">신규 생성 또는 증분 업데이트</div>
+                <div class="flow-desc">처음이면 전체 리뷰로 요약을 생성하고, 이후에는 마지막으로 반영된 리뷰 이후의 새 리뷰만으로 기존 요약을 갱신합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step cross">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+                <div class="flow-title">임베딩도 함께 갱신 <span class="flow-tag">📦 book_embeddings</span></div>
+                <div class="flow-desc">요약이 끝나면 이벤트를 발행하고, RabbitMQ를 통해 book_embeddings로 전달되어 검색용 임베딩도 함께 최신화됩니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+                <div class="flow-title">도서 상세 페이지에 노출</div>
+                <div class="flow-desc">긴 리뷰를 하나하나 읽지 않아도, AI 요약으로 핵심 평가를 한눈에 파악할 수 있습니다.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide9.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot active" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide11.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

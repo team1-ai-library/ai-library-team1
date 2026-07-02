@@ -1,5 +1,6 @@
 package com.nhnacademy.ailibraryteam1.telegram.command;
 
+import com.nhnacademy.ailibraryteam1.telegram.TelegramInteractionLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -15,9 +16,12 @@ import java.util.List;
 @Component
 public class LibraryCommandHandler implements TelegramCommandHandler {
     private final ChatClient chatClient;
-    
-    public LibraryCommandHandler(@Qualifier("ollamaChatClient") ChatClient chatClient) {
+    private final TelegramInteractionLog interactionLog;
+
+    public LibraryCommandHandler(@Qualifier("ollamaChatClient") ChatClient chatClient,
+                                  TelegramInteractionLog interactionLog) {
         this.chatClient = chatClient;
+        this.interactionLog = interactionLog;
     }
     
     @Override
@@ -39,6 +43,7 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
         }
 
         log.info("[텔레그램 도서나루 챗봇 호출]: {}", argument);
+        interactionLog.record(TelegramInteractionLog.Type.REQUEST, argument);
 
         String apiResponse = chatClient.prompt()
                 .user(argument)
@@ -49,7 +54,8 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
                 .content();
 
         log.info("[텔레그램 도서나루 챗봇 응답]: {}", apiResponse);
-        
+        interactionLog.record(TelegramInteractionLog.Type.RESPONSE, apiResponse);
+
         if (apiResponse == null || apiResponse.isBlank()) {
             return List.of(SendMessage.builder()
                     .chatId(chatId)
