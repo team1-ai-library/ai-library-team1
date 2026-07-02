@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - 데이터 흐름</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Request Flow</div>
+    <h2>하나의 질문이 처리되는 과정</h2>
+
+    <div class="flow-timeline">
+        <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+                <div class="flow-title">질문 입력</div>
+                <div class="flow-desc">웹 챗봇 또는 텔레그램에서 자연어로 질문을 입력합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+                <div class="flow-title">임베딩 변환 · 캐시 확인</div>
+                <div class="flow-desc">team1이 질문을 BGE-M3로 임베딩하고, 동일한 질문이면 시맨틱 캐시에서 즉시 응답합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step cross">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+                <div class="flow-title">하이브리드 검색 <span class="flow-tag">📦 book_embeddings</span></div>
+                <div class="flow-desc">키워드+벡터 점수를 RRF로 결합해 book_embeddings가 미리 채워둔 pgvector 데이터에서 후보 100권을 조회합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+                <div class="flow-title">재랭크</div>
+                <div class="flow-desc">RRF 점수 0.02 이상인 후보만 남겨 상위 5권으로 압축합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+                <div class="flow-title">프롬프트 구성</div>
+                <div class="flow-desc">5권의 제목·저자·내용 일부·평점·리뷰 요약을 컨텍스트로 담아 프롬프트를 만듭니다.</div>
+            </div>
+        </div>
+        <div class="flow-step cross">
+            <div class="flow-num">6</div>
+            <div class="flow-body">
+                <div class="flow-title">LLM 호출 <span class="flow-tag">🔌 mcp-server</span></div>
+                <div class="flow-desc">LLM이 답변을 만들다가 필요하면 MCP 도구로 mcp-server에 실시간 정보(대출 가능 도서관, 인기 도서 등)를 요청합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div class="flow-body">
+                <div class="flow-title">추천 선별</div>
+                <div class="flow-desc">LLM이 맥락에 맞는 최대 5권을 고르고, 각 책마다 추천 이유를 함께 생성합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">8</div>
+            <div class="flow-body">
+                <div class="flow-title">응답 반환 · 캐시 저장</div>
+                <div class="flow-desc">도서 상세 정보를 조인해 사용자에게 응답하고, 결과를 캐시에 저장해 다음 동일 질문에 재사용합니다.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide2.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot active" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide4.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

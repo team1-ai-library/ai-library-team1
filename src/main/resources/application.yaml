@@ -1,3 +1,89 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: ai-library-team1
+
+  datasource:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    driver-class-name: org.postgresql.Driver
+      #    url: jdbc:postgresql://10.116.64.13:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 내부망(랜선)
+    url: jdbc:postgresql://s3.java21.net:8000/team1-library?stringtype=unspecified&reWriteBatchedInserts=true # 외부망 (와이파이)
+    username: team1
+    password: ${POSTGRESQL_PW}
+    dbcp2:
+      initial-size: 5
+      max-total: 5
+      max-idle: 5
+      min-idle: 5
+      test-on-borrow: true
+      validation-query: SELECT 1
+      pool-prepared-statements: true
+      max-open-prepared-statements: 100
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+  rabbitmq:
+    host: ${rabbitmq-host}      # 로컬 Docker
+    port: ${rabbitmq-port}           # AMQP 포트
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    # 운영 서버로 바꿀 때는 host만 변경
+    # host: 실제서버IP 또는 AWS MQ 주소
+
+    listener:
+      simple:
+        acknowledge-mode: manual   # manual ACK (권장)
+        prefetch: 10               # Consumer당 최대 처리 수
+
+  ai:
+    openai:
+      base-url: https://emb.java21.net
+      api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: bge-m3
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY} # 환경변수 사용 (.env에서 관리)
+        chat:
+          options:
+            model: gemini-2.0-flash
+            temperature: 0.7
+    ollama:
+      base-url: http://ollama.java21.net # 올라마 서버 주소
+      chat:
+        options:
+          model: qwen2.5:latest # 사용할 모델
+          temperature: 0.3 # 응답 일관성
+#          max-tokens: 1024
+          top-p: 0.9
+          top-k: 40
+
+    mcp:
+      client:
+        enabled: true
+        sse:
+          connections:
+            data4library:
+              url: http://localhost:8081/sse
+        initialized: false
+        request-timeout: 60s
+
+local-ai:
+  base-url: ${local-ai-base-url}
+  model: mlx-community/Qwen3-4B-4bit
+
+init:
+  book-file: data/BOOK_DB_202112_filled.csv
+  enable: false
+
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    enabled: true
+    username: T1AILibBot

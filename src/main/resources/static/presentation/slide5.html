@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관 - book_embeddings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="/presentation/presentation.css">
+</head>
+<body>
+
+<section class="slide">
+    <div class="eyebrow">Project Detail · 2 / 3</div>
+    <h2>book_embeddings — 임베딩 배치 서버</h2>
+
+    <div class="flow-timeline">
+        <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-body">
+                <div class="flow-title">스케줄러 실행</div>
+                <div class="flow-desc">3분 주기로 아직 임베딩되지 않은 도서를 500건씩 조회합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-body">
+                <div class="flow-title">텍스트 전처리</div>
+                <div class="flow-desc">"[제목] · [저자] · [내용]" 형식으로 구성하고 HTML 태그 제거, 소문자화를 거칩니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-body">
+                <div class="flow-title">배치 임베딩</div>
+                <div class="flow-desc">BGE-M3 모델로 16건씩 묶어 호출해 1024차원 벡터를 생성합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-body">
+                <div class="flow-title">pgvector 저장</div>
+                <div class="flow-desc">float4 배열로 도서별 임베딩을 저장/갱신합니다.</div>
+            </div>
+        </div>
+        <div class="flow-step cross">
+            <div class="flow-num">5</div>
+            <div class="flow-body">
+                <div class="flow-title">리뷰 실시간 반영 <span class="flow-tag">🌐 team1과 연계</span></div>
+                <div class="flow-desc">team1에서 리뷰/요약이 새로 생기면 RabbitMQ(library.team1.review.embedding)로 즉시 전달받아, 배치 주기를 기다리지 않고 바로 임베딩을 갱신합니다.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-controls">
+    <a class="nav-arrow" data-nav="prev" href="/presentation/slide4.html">‹</a>
+    <div class="nav-dots">
+        <a class="nav-dot" href="/presentation/slide1.html"></a>
+        <a class="nav-dot" href="/presentation/slide2.html"></a>
+        <a class="nav-dot" href="/presentation/slide3.html"></a>
+        <a class="nav-dot" href="/presentation/slide4.html"></a>
+        <a class="nav-dot active" href="/presentation/slide5.html"></a>
+        <a class="nav-dot" href="/presentation/slide6.html"></a>
+        <a class="nav-dot" href="/presentation/slide7.html"></a>
+        <a class="nav-dot" href="/presentation/slide8.html"></a>
+        <a class="nav-dot" href="/presentation/slide9.html"></a>
+        <a class="nav-dot" href="/presentation/slide10.html"></a>
+        <a class="nav-dot" href="/presentation/slide11.html"></a>
+        <a class="nav-dot" href="/presentation/slide12.html"></a>
+        <a class="nav-dot" href="/presentation/slide13.html"></a>
+        <a class="nav-dot" href="/presentation/slide14.html"></a>
+    </div>
+    <a class="nav-arrow" data-nav="next" href="/presentation/slide6.html">›</a>
+</div>
+
+<script src="/presentation/presentation.js"></script>
+</body>
+</html>

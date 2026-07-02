@@ -1,0 +1,669 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f4f0;
+    color: #1a1a18;
+    display: flex;
+    flex-direction: column;
+}
+
+.slide {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 6rem;
+    gap: 1.5rem;
+    overflow: auto;
+}
+
+.eyebrow {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #888780;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.25rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: #55534c;
+    text-align: center;
+    max-width: 640px;
+    line-height: 1.6;
+}
+
+.meta {
+    margin-top: 2rem;
+    font-size: 13px;
+    color: #888780;
+}
+
+/* ── Project pill list (slide 1) ── */
+.project-list {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.project-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    font-size: 14px;
+    color: #1a1a18;
+}
+
+.project-pill i {
+    font-size: 16px;
+    color: #6a6560;
+}
+
+/* ── Architecture diagram (slide 2) ── */
+.diagram {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.node {
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    width: 220px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.node .node-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.node .node-desc {
+    font-size: 12.5px;
+    color: #6a6560;
+    line-height: 1.5;
+}
+
+.node.accent {
+    border-color: #c9c3b6;
+    background: #fbfaf7;
+}
+
+.arrow {
+    font-size: 22px;
+    color: #b3aea3;
+}
+
+.arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    color: #a29c8f;
+    text-align: center;
+}
+
+/* ── Flow timeline (데이터 흐름 / 파이프라인) ── */
+.flow-timeline {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 640px;
+    margin-top: 0.5rem;
+}
+
+.flow-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 1.3rem;
+}
+
+.flow-step:last-child {
+    padding-bottom: 0;
+}
+
+.flow-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: -2px;
+    width: 1px;
+    background: #e0ddd6;
+}
+
+.flow-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1a1a18;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.flow-step.cross .flow-num {
+    background: #6a6560;
+}
+
+.flow-body {
+    text-align: left;
+    padding-top: 4px;
+}
+
+.flow-body .flow-title {
+    font-weight: 600;
+    font-size: 14.5px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flow-body .flow-desc {
+    font-size: 12.5px;
+    color: #6a6560;
+    line-height: 1.55;
+}
+
+.flow-tag {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #6a6560;
+    background: #f0eee8;
+    border-radius: 999px;
+    padding: 2px 8px;
+}
+
+/* ── Bullet detail list (slide: 프로젝트/기능 상세) ── */
+.detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-top: 0.5rem;
+    max-width: 620px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.detail-item i {
+    color: #6a6560;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.detail-item b {
+    font-weight: 600;
+}
+
+/* ── Feature grid (slide: 핵심 기능) ── */
+.feature-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+    max-width: 980px;
+}
+
+.feature-card {
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1.25rem;
+    width: 225px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.feature-card .feature-icon {
+    font-size: 20px;
+    color: #6a6560;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.feature-card .feature-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.feature-card .feature-desc {
+    font-size: 12.5px;
+    color: #6a6560;
+    line-height: 1.55;
+}
+
+.feature-card.accent {
+    border-color: #c9c3b6;
+    background: #fbfaf7;
+}
+
+.feature-note-list {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.feature-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fbfaf7;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    font-size: 13px;
+}
+
+.feature-note i {
+    color: #6a6560;
+}
+
+/* ── Tech stack grid ── */
+.tech-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    align-items: center;
+    margin-top: 0.5rem;
+    max-width: 860px;
+}
+
+.tech-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a29c8f;
+}
+
+.tech-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+.tech-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 8px;
+    padding: 0.45rem 0.9rem;
+    font-size: 13px;
+}
+
+/* ── Closing slide ── */
+.closing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-top: 0.5rem;
+}
+
+.closing-list .closing-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.closing-list .closing-item i {
+    color: #6a6560;
+    font-size: 18px;
+}
+
+/* ── Live-demo (site-in-site) frame ── */
+.browser-frame {
+    width: min(1000px, 90vw);
+    height: min(600px, 62vh);
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.browser-toolbar {
+    height: 38px;
+    background: #ece9e2;
+    border-bottom: 0.5px solid #e0ddd6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    flex-shrink: 0;
+}
+
+.browser-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d8d4ca;
+}
+
+.browser-url {
+    flex: 1;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #6a6560;
+    padding: 4px 10px;
+    margin-left: 6px;
+}
+
+.browser-frame iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+}
+
+.demo-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* ── Telegram demo (slide 4) ── */
+.telegram-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.command-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 300px;
+}
+
+.command-card {
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    text-align: left;
+}
+
+.command-card .cmd {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a18;
+}
+
+.command-card .cmd-desc {
+    font-size: 12.5px;
+    color: #6a6560;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.command-list.two-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 640px;
+    justify-content: center;
+}
+
+.command-list.two-col .command-card {
+    width: 300px;
+}
+
+.qr-card {
+    width: 220px;
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.qr-card img {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+}
+
+.qr-card .qr-label {
+    font-size: 12.5px;
+    color: #6a6560;
+    text-align: center;
+}
+
+.qr-card .qr-handle {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.chat-feed {
+    width: 300px;
+    height: 320px;
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.chat-feed .chat-feed-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6a6560;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+}
+
+.chat-feed .chat-empty {
+    font-size: 12.5px;
+    color: #a29c8f;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.bubble {
+    max-width: 85%;
+    font-size: 12.5px;
+    line-height: 1.5;
+    padding: 8px 11px;
+    border-radius: 10px;
+    word-break: break-word;
+    white-space: pre-wrap;
+    cursor: pointer;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
+.bubble.expanded {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+}
+
+.bubble.request {
+    align-self: flex-end;
+    background: #1a1a18;
+    color: #fff;
+    border-bottom-right-radius: 2px;
+}
+
+.bubble.response {
+    align-self: flex-start;
+    background: #f0eee8;
+    color: #1a1a18;
+    border-bottom-left-radius: 2px;
+}
+
+.prereq-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #a08a4f;
+    background: #fbf5e6;
+    border: 0.5px solid #ecdca8;
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+}
+
+/* ── Buttons ── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    border: 0.5px solid #e0ddd6;
+    background: #fff;
+    color: #1a1a18;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #f0eee8;
+}
+
+.btn.primary {
+    background: #1a1a18;
+    color: #fff;
+    border-color: #1a1a18;
+}
+
+.btn.primary:hover {
+    background: #33322e;
+}
+
+/* ── Nav controls ── */
+.nav-controls {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    pointer-events: none;
+}
+
+.nav-controls * {
+    pointer-events: auto;
+}
+
+.nav-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d8d4ca;
+    text-decoration: none;
+}
+
+.nav-dot.active {
+    background: #1a1a18;
+}
+
+.nav-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: 0.5px solid #e0ddd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #1a1a18;
+    font-size: 16px;
+}
+
+.nav-arrow:hover {
+    background: #f0eee8;
+}
+
+.nav-arrow.disabled {
+    visibility: hidden;
+}

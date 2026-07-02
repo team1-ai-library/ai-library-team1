@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도서관</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header>
+    <a href="/" class="header-logo">
+        <i class="ti ti-books" aria-hidden="true"></i>
+        <h1>AI 도서관</h1>
+    </a>
+</header>
+
+<div class="tabs">
+    <div class="tab active" data-tab="search">
+        <i class="ti ti-search" aria-hidden="true"></i> 도서 검색
+    </div>
+    <div class="tab" data-tab="chat">
+        <i class="ti ti-message" aria-hidden="true"></i> 도서관 챗봇
+    </div>
+</div>
+
+<div id="panel-search" class="panel active">
+    <div class="search-box">
+        <div class="search-row">
+            <input type="text" id="search-input" placeholder="검색어를 입력하세요">
+            <button id="search-btn" onclick="doSearch(0)">
+                <i class="ti ti-search" aria-hidden="true"></i> 검색
+            </button>
+        </div>
+        <div class="options-row">
+            <div class="seg">
+                <input type="radio" name="search-type" id="t-keyword" value="keyword" checked>
+                <label for="t-keyword">키워드</label>
+                <input type="radio" name="search-type" id="t-vector" value="vector">
+                <label for="t-vector">벡터</label>
+                <input type="radio" name="search-type" id="t-hybrid" value="hybrid">
+                <label for="t-hybrid">하이브리드</label>
+                <input type="radio" name="search-type" id="t-rag" value="rag">
+                <label for="t-rag">AI 추천</label>
+            </div>
+            <div id="model-select-wrap">
+                <span class="model-label">모델</span>
+                <select id="model-select">
+                    <option value="gemini">Gemini</option>
+                    <option value="ollama">Ollama</option>
+                    <option value="local">로컬 모델</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" id="search-loading">
+        <i class="ti ti-refresh"></i> 검색 중...
+    </div>
+    <div class="error-msg" id="search-error"></div>
+    <div id="search-results">
+        <div class="empty">
+            <i class="ti ti-book-2" aria-hidden="true"></i>
+            <p>검색어를 입력하고 검색하세요</p>
+        </div>
+    </div>
+    <div id="pagination" class="pagination"></div>
+</div>
+
+<div id="panel-chat" class="panel">
+    <div class="chat-wrap">
+        <div class="chat-messages" id="chat-messages">
+            <div class="msg bot">
+                <div class="msg-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
+                <div class="msg-bubble">안녕하세요! 도서관 챗봇입니다. 도서 소장 여부, 대출 가능 도서관, 인기 도서 등을 물어보세요.</div>
+            </div>
+        </div>
+        <div class="chat-hint">예: "광주에서 토비의 스프링 빌릴 수 있어?" / "이번 주 급상승 도서 알려줘"</div>
+        <div class="chat-model-row">
+            <span class="model-label">모델</span>
+            <select id="chat-model-select">
+                <option value="ollama">Ollama</option>
+                <option value="local">로컬 모델</option>
+                <option value="gemini">Gemini</option>
+            </select>
+        </div>
+        <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="질문을 입력하세요">
+            <button id="chat-send" onclick="doChat()">
+                <i class="ti ti-send" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
