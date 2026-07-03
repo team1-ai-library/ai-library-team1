@@ -68,7 +68,7 @@ public class TelegramBookSearchUseCase {
                 .toList();
 
         // 4. RAG 서비스 호출 (리랭킹된 도서 전달)
-        List<BookAiRecommendationResponse> result = bookRagService.recommendBooksWithCandidates(info.text(), "ollama", topKBooks, conversationId);
+        List<BookAiRecommendationResponse> result = bookRagService.recommendBooksWithCandidates(info.text(), "gemini", topKBooks, conversationId);
 
         List<Long> bookIds = result.stream()
                 .map(BookAiRecommendationResponse::id)

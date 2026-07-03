@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ReviewSummarizer {
     private final ChatClient chatClient;
 
-    public ReviewSummarizer(@Qualifier("localChatClient") ChatClient chatClient) {
+    public ReviewSummarizer(@Qualifier("geminiChatClient") ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 

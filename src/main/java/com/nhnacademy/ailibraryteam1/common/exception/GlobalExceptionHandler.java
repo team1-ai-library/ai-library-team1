@@ -2,6 +2,7 @@ package com.nhnacademy.ailibraryteam1.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -21,6 +22,16 @@ public class GlobalExceptionHandler {
         ErrorResponse response = ErrorResponse.from(e.getErrorCode());
 
         log.warn("비즈니스 로직 오류 발생: {}", e.getDetailMessage());
+
+        return ResponseEntity.status(response.status()).body(response);
+    }
+
+    // @Valid 검증 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        ErrorResponse response = ErrorResponse.from(ErrorCode.INVALID_INPUT);
+
+        log.warn("유효성 검증 실패: {}", e.getMessage());
 
         return ResponseEntity.status(response.status()).body(response);
     }

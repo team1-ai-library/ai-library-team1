@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+    INVALID_INPUT(HttpStatus.BAD_REQUEST, "유효하지 않은 입력값입니다."),
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 도서입니다."),
     RATING_INVALID(HttpStatus.BAD_REQUEST, "유효하지 않은 평점입니다."),
     STATISTIC_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰 통계 정보를 찾을 수 없습니다."),

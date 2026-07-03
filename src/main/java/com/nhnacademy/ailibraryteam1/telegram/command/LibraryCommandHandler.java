@@ -18,7 +18,7 @@ public class LibraryCommandHandler implements TelegramCommandHandler {
     private final ChatClient chatClient;
     private final TelegramInteractionLog interactionLog;
 
-    public LibraryCommandHandler(@Qualifier("ollamaChatClient") ChatClient chatClient,
+    public LibraryCommandHandler(@Qualifier("geminiChatClient") ChatClient chatClient,
                                   TelegramInteractionLog interactionLog) {
         this.chatClient = chatClient;
         this.interactionLog = interactionLog;
