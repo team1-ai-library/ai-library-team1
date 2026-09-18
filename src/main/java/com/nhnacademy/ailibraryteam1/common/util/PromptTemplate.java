@@ -12,6 +12,8 @@ public class PromptTemplate {
             각 도서마다 왜 추천하는지 명확한 이유를 제시하세요.
             최대 5권까지 추천해주세요.
             참고 도서 정보에 없는 내용은 모른다고 답변하세요.
+            
+            MarkDown 형식으로 답변하지 마세요.
             """;
 
     public static final String USER_MESSAGE = """
